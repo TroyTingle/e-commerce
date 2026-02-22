@@ -1,10 +1,12 @@
 package uk.co.ttingle.userservice.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import uk.co.ttingle.userservice.exceptions.EmailConflictException;
 import uk.co.ttingle.userservice.models.User;
 import uk.co.ttingle.userservice.models.dto.AuthResponse;
 import uk.co.ttingle.userservice.models.dto.LoginRequest;
@@ -14,6 +16,7 @@ import uk.co.ttingle.userservice.repositories.UserRepository;
 import uk.co.ttingle.commonlib.security.JwtUtil;
 
 import static uk.co.ttingle.commonlib.security.JwtConstants.BEARER;
+import static uk.co.ttingle.userservice.enums.Role.CUSTOMER;
 
 @Service
 @RequiredArgsConstructor
@@ -24,19 +27,22 @@ public class UserAuthService {
   private final AuthenticationManager authenticationManager;
   private final JwtUtil jwtUtil;
 
+
+  @Transactional
   public UserDto registerUser(RegisterRequest registerRequest) {
-    // Check if user with the same email already exists
     if (userRepository.existsByEmail(registerRequest.getEmail())) {
-      // TODO: Create a custom exception for this case and handle it globally
-      throw new IllegalArgumentException("Email is already in use");
+      throw new EmailConflictException("Email is already in use");
     }
 
-    User newUser = userRepository.save(User.builder()
-        .email(registerRequest.getEmail())
-        .firstName(registerRequest.getFirstName())
-        .lastName(registerRequest.getLastName())
-        .password(passwordEncoder.encode(registerRequest.getPassword()))
-        .build());
+    User newUser = userRepository.save(
+        User.builder()
+            .email(registerRequest.getEmail())
+            .firstName(registerRequest.getFirstName())
+            .lastName(registerRequest.getLastName())
+            .password(passwordEncoder.encode(registerRequest.getPassword()))
+            .role(CUSTOMER)
+            .build()
+    );
 
     return UserDto.builder()
         .email(newUser.getEmail())
@@ -45,6 +51,7 @@ public class UserAuthService {
         .build();
   }
 
+  @Transactional
   public AuthResponse loginUser(LoginRequest loginRequest) {
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
