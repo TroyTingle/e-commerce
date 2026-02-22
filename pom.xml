@@ -8,19 +8,101 @@
   <name>ecommerce</name>
   <url>http://maven.apache.org</url>
     <modules>
-        <module>common-lib</module>
-        <module>user-service</module>
-        <module>product-service</module>
-        <module>inventory-service</module>
-        <module>order-service</module>
-        <module>payment-service</module>
-        <module>gateway</module>
-        <module>common-lib</module>
-        <module>user-service</module>
-        <module>product-service</module>
-        <module>inventory-service</module>
-        <module>order-service</module>
-        <module>payment-service</module>
-        <module>gateway</module>
+      <module>common-lib</module>
+      <module>user-service</module>
+      <module>product-service</module>
+      <module>inventory-service</module>
+      <module>order-service</module>
+      <module>payment-service</module>
+      <module>gateway</module>
     </modules>
+    <properties>
+      <java.version>25</java.version>
+      <spring.boot.version>3.5.10</spring.boot.version>
+      <spring.cloud.version>2025.0.0</spring.cloud.version>
+
+      <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+      <maven.surefire.plugin.version>3.2.2</maven.surefire.plugin.version>
+      <maven.failsafe.plugin.version>3.2.2</maven.failsafe.plugin.version>
+      <checkstyle.plugin.version>3.3.0</checkstyle.plugin.version>
+      <spotbugs.plugin.version>4.8.3.0</spotbugs.plugin.version>
+    </properties>
+
+    <dependencies>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <optional>true</optional>
+      </dependency>
+    </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- Spring Boot BOM -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Spring Cloud BOM -->
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring.cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven.compiler.plugin.version}</version>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+            <release>${java.version}</release>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.surefire.plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven.failsafe.plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${checkstyle.plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${spotbugs.plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>
