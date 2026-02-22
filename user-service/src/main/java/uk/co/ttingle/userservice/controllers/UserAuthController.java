@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import uk.co.ttingle.userservice.models.dto.AuthResponse;
 import uk.co.ttingle.userservice.models.dto.LoginRequest;
 import uk.co.ttingle.userservice.models.dto.RegisterRequest;
 import uk.co.ttingle.userservice.models.dto.UserDto;
@@ -20,7 +21,7 @@ public class UserAuthController {
   private final UserAuthService userAuthService;
 
   @GetMapping("/login")
-  public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+  public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
     return ResponseEntity.ok(userAuthService.loginUser(loginRequest));
   }
 

@@ -13,6 +13,10 @@
   <name>user-service</name>
   <description>User and Authentication Service</description>
 
+  <properties>
+    <instancio.version>5.5.1</instancio.version>
+  </properties>
+
   <dependencies>
       <!-- Spring Boot Web -->
     <dependency>
@@ -67,6 +71,14 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Instancio -->
+    <dependency>
+      <groupId>org.instancio</groupId>
+      <artifactId>instancio-junit</artifactId>
+      <version>${instancio.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
