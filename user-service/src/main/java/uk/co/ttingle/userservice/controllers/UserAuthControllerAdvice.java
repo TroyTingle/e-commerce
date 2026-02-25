@@ -16,17 +16,14 @@ public class UserAuthControllerAdvice {
 
 
   @ExceptionHandler(EmailConflictException.class)
-  public ResponseEntity<ExceptionDto> handleGlobalException(EmailConflictException ex) {
+  public ResponseEntity<ExceptionDto> handleEmailConflictException(EmailConflictException ex) {
     return ResponseEntity.status(CONFLICT).body(new ExceptionDto(ex.getMessage()));
   }
 
   @ExceptionHandler(BadCredentialsException.class)
-  public ResponseEntity<ExceptionDto> handleGlobalException(BadCredentialsException ex) {
+  public ResponseEntity<ExceptionDto> handleBadCredentialsExceptionException(BadCredentialsException ex) {
     return ResponseEntity.status(UNAUTHORIZED).body(new ExceptionDto(ex.getMessage()));
   }
-
-
-
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ExceptionDto> handleGlobalException(Exception ex) {

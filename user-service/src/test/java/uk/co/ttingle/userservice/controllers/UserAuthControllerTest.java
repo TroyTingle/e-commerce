@@ -9,10 +9,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import uk.co.ttingle.userservice.models.dto.AuthResponse;
 import uk.co.ttingle.userservice.models.dto.LoginRequest;
+import uk.co.ttingle.userservice.models.dto.RegisterRequest;
+import uk.co.ttingle.userservice.models.dto.UserDto;
 import uk.co.ttingle.userservice.services.UserAuthService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,5 +41,20 @@ class UserAuthControllerTest {
     assertThat(response.getStatusCode()).isEqualTo(OK);
     assertThat(response.getBody()).isInstanceOf(AuthResponse.class);
     assertThat(response.getBody()).isEqualTo(authResponse);
+  }
+
+  @Test
+  void testRegisterCalled_thenUserDtoReturned() {
+    UserDto userDto = Instancio.of(UserDto.class).create();
+    RegisterRequest registerRequest = Instancio.of(RegisterRequest.class).create();
+
+    when(userAuthService.registerUser(registerRequest)).thenReturn(userDto);
+
+    ResponseEntity<UserDto> response = userAuthController.register(registerRequest);
+
+    assertThat(response).isNotNull();
+    assertThat(response.getStatusCode()).isEqualTo(CREATED);
+    assertThat(response.getBody()).isInstanceOf(UserDto.class);
+    assertThat(response.getBody()).isEqualTo(userDto);
   }
 }
