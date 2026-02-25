@@ -13,10 +13,6 @@
   <name>user-service</name>
   <description>User and Authentication Service</description>
 
-  <properties>
-    <instancio.version>5.5.1</instancio.version>
-  </properties>
-
   <dependencies>
       <!-- Spring Boot Web -->
     <dependency>
