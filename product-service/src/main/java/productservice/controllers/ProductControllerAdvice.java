@@ -6,6 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import productservice.exceptions.ProductNotFoundException;
 import uk.co.ttingle.commonlib.dto.ExceptionDto;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Slf4j
 @RestControllerAdvice
@@ -28,7 +30,7 @@ public class ProductControllerAdvice {
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ExceptionDto> handleValidationExceptions(MethodArgumentNotValidException ex) {
+  public ResponseEntity<ExceptionDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
     Map<String, String> errors = new HashMap<>();
 
     for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
@@ -39,5 +41,13 @@ public class ProductControllerAdvice {
         .message(ex.getMessage())
         .validationErrors(errors)
         .build());
+  }
+
+  @ExceptionHandler(ProductNotFoundException.class)
+  public ResponseEntity<ExceptionDto> handleProductNotFoundException(ProductNotFoundException ex) {
+    return ResponseEntity.status(NOT_FOUND)
+        .body(ExceptionDto.builder()
+            .message(ex.getMessage())
+            .build());
   }
 }

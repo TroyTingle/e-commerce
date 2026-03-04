@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class ProductSpecification {
 
   public static Specification<Product> hasCategory(String categoryName) {
-    return (root, query, cb) -> {
+    return (root, _, cb) -> {
       if (categoryName == null || categoryName.isBlank()) {
         return null;
       }
@@ -23,7 +23,7 @@ public class ProductSpecification {
   }
 
   public static Specification<Product> minPrice(BigDecimal minPrice) {
-    return (root, query, cb) -> {
+    return (root, _, cb) -> {
       if (minPrice == null) {
         return null;
       }
@@ -32,7 +32,7 @@ public class ProductSpecification {
   }
 
   public static Specification<Product> maxPrice(BigDecimal maxPrice) {
-    return (root, query, cb) -> {
+    return (root, _, cb) -> {
       if (maxPrice == null) {
         return null;
       }
@@ -41,7 +41,7 @@ public class ProductSpecification {
   }
 
   public static Specification<Product> nameContains(String name) {
-    return (root, query, cb) -> {
+    return (root, _, cb) -> {
       if (name == null || name.isBlank()) {
         return null;
       }
@@ -53,7 +53,7 @@ public class ProductSpecification {
   }
 
   public static Specification<Product> isActive() {
-    return (root, query, cb) ->
+    return (root, _, cb) ->
         cb.isTrue(root.get("active"));
   }
 }
