@@ -17,16 +17,22 @@ public class UserAuthControllerAdvice {
 
   @ExceptionHandler(EmailConflictException.class)
   public ResponseEntity<ExceptionDto> handleEmailConflictException(EmailConflictException ex) {
-    return ResponseEntity.status(CONFLICT).body(new ExceptionDto(ex.getMessage()));
+    return ResponseEntity.status(CONFLICT).body(ExceptionDto.builder()
+        .message(ex.getMessage())
+        .build());
   }
 
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<ExceptionDto> handleBadCredentialsExceptionException(BadCredentialsException ex) {
-    return ResponseEntity.status(UNAUTHORIZED).body(new ExceptionDto(ex.getMessage()));
+    return ResponseEntity.status(UNAUTHORIZED).body(ExceptionDto.builder()
+        .message(ex.getMessage())
+        .build());
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ExceptionDto> handleGlobalException(Exception ex) {
-    return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ExceptionDto(ex.getMessage()));
+    return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(ExceptionDto.builder()
+        .message(ex.getMessage())
+        .build());
   }
 }

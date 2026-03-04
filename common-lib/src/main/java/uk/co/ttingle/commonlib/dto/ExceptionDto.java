@@ -1,13 +1,14 @@
 package uk.co.ttingle.commonlib.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(toBuilder = true)
 public class ExceptionDto {
 
   private String message;
+  private Map<String, String> validationErrors;
 }
