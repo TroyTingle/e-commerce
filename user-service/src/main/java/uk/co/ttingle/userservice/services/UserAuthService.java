@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uk.co.ttingle.commonlib.security.JwtUtil;
 import uk.co.ttingle.userservice.exceptions.EmailConflictException;
 import uk.co.ttingle.userservice.models.User;
 import uk.co.ttingle.userservice.models.dto.AuthResponse;
@@ -17,6 +16,7 @@ import uk.co.ttingle.userservice.models.dto.LoginRequest;
 import uk.co.ttingle.userservice.models.dto.RegisterRequest;
 import uk.co.ttingle.userservice.models.dto.UserDto;
 import uk.co.ttingle.userservice.repositories.UserRepository;
+import uk.co.ttingle.userservice.util.JwtTokenUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class UserAuthService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
-  private final JwtUtil jwtUtil;
+  private final JwtTokenUtil jwtUtil;
 
   @Transactional
   public UserDto registerUser(RegisterRequest registerRequest) {

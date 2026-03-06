@@ -1,24 +1,25 @@
-package uk.co.ttingle.commonlib.security;
+package uk.co.ttingle.userservice.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-
-import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-public class JwtUtil {
+@Component
+public class JwtTokenUtil {
 
-  private final SecretKey secretKey;
-  private final long jwtExpirationMs;
+  @Value("${security.jwt.secret}")
+  private String secretKey;
 
-  public JwtUtil(String secret, long jwtExpirationMs) {
-    this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
-    this.jwtExpirationMs = jwtExpirationMs;
-  }
+  @Value("${security.jwt.expiration}")
+  private long jwtExpirationMs;
 
   public String generateToken(String email) {
     return generateToken(email, Map.of());
@@ -32,7 +33,7 @@ public class JwtUtil {
         .subject(email)
         .issuedAt(Date.from(now))
         .expiration(Date.from(now.plusMillis(jwtExpirationMs)))
-        .signWith(secretKey)
+        .signWith(getSecretKey())
         .compact();
   }
 
@@ -58,10 +59,10 @@ public class JwtUtil {
   }
 
   private Claims parseClaims(String token) {
-    return Jwts.parser()
-        .verifyWith(secretKey)
-        .build()
-        .parseSignedClaims(token)
-        .getPayload();
+    return Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token).getPayload();
+  }
+
+  private SecretKey getSecretKey() {
+    return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
   }
 }
