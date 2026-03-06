@@ -11,6 +11,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.time.Instant;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,16 +21,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.co.ttingle.userservice.enums.Role;
 
-import java.time.Instant;
-import java.util.UUID;
-
 @Entity
 @Table(
     name = "users",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "email", columnNames = "email")
-    }
-)
+    uniqueConstraints = {@UniqueConstraint(name = "email", columnNames = "email")})
 @Getter
 @Setter
 @Builder

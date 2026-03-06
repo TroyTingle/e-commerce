@@ -1,5 +1,10 @@
 package uk.co.ttingle.userservice.controllers;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,20 +18,12 @@ import uk.co.ttingle.userservice.models.dto.RegisterRequest;
 import uk.co.ttingle.userservice.models.dto.UserDto;
 import uk.co.ttingle.userservice.services.UserAuthService;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-
 @ExtendWith(MockitoExtension.class)
 class UserAuthControllerTest {
 
-  @Mock
-  private UserAuthService userAuthService;
+  @Mock private UserAuthService userAuthService;
 
-  @InjectMocks
-  private UserAuthController userAuthController;
-
+  @InjectMocks private UserAuthController userAuthController;
 
   @Test
   void testLoginCalled_thenAuthResponseReturned() {
