@@ -6,10 +6,12 @@
   <parent>
     <groupId>uk.co.ttingle</groupId>
     <artifactId>ecommerce</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>product-service</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>product-service</name>
 
   <properties>
       <maven.compiler.source>25</maven.compiler.source>
@@ -58,7 +60,7 @@
     <dependency>
       <groupId>uk.co.ttingle</groupId>
       <artifactId>common-lib</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Lombok -->
@@ -86,11 +88,28 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>application.yml</include>
+        </includes>
+      </resource>
+    </resources>
+
     <plugins>
       <!-- Spring Boot -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
