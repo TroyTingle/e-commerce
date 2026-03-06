@@ -18,6 +18,7 @@
     </modules>
     <properties>
       <java.version>25</java.version>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <spring.boot.version>3.5.10</spring.boot.version>
       <spring.cloud.version>2025.0.0</spring.cloud.version>
 
@@ -28,6 +29,7 @@
       <maven.failsafe.plugin.version>3.2.2</maven.failsafe.plugin.version>
       <checkstyle.plugin.version>3.3.0</checkstyle.plugin.version>
       <spotbugs.plugin.version>4.8.3.0</spotbugs.plugin.version>
+      <spotless.plugin.version>3.2.1</spotless.plugin.version>
     </properties>
 
     <dependencies>
@@ -40,7 +42,6 @@
 
   <dependencyManagement>
     <dependencies>
-
       <!-- Spring Boot BOM -->
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -49,7 +50,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <!-- Spring Cloud BOM -->
       <dependency>
         <groupId>org.springframework.cloud</groupId>
@@ -58,7 +58,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -106,5 +105,36 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <!-- Spotless plugin for code formatting -->
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless.plugin.version}</version>
+        <configuration>
+          <java>
+            <toggleOffOn/>
+            <cleanthat>
+              <sourceJdk>${java.version}</sourceJdk>
+              <mutators>
+                <mutator>SafeAndConsensual</mutator>
+              </mutators>
+            </cleanthat>
+            <googleJavaFormat/>
+            <importOrder/>
+            <removeUnusedImports/>
+            <formatAnnotations/>
+          </java>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

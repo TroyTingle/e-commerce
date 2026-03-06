@@ -1,11 +1,9 @@
 package productservice.models.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-
 import java.math.BigDecimal;
 import java.util.UUID;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder(toBuilder = true)

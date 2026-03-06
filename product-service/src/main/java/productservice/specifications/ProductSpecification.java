@@ -1,11 +1,9 @@
 package productservice.specifications;
 
-import org.springframework.data.jpa.domain.Specification;
-
 import jakarta.persistence.criteria.JoinType;
-import productservice.models.Product;
-
 import java.math.BigDecimal;
+import org.springframework.data.jpa.domain.Specification;
+import productservice.models.Product;
 
 public class ProductSpecification {
 
@@ -15,10 +13,7 @@ public class ProductSpecification {
         return null;
       }
 
-      return cb.equal(
-          root.join("category", JoinType.LEFT).get("name"),
-          categoryName
-      );
+      return cb.equal(root.join("category", JoinType.LEFT).get("name"), categoryName);
     };
   }
 
@@ -45,15 +40,12 @@ public class ProductSpecification {
       if (name == null || name.isBlank()) {
         return null;
       }
-      return cb.like(
-          cb.lower(root.get("name")),
-          "%" + name.toLowerCase() + "%"
-      );
+      return cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     };
   }
 
-  public static Specification<Product> isActive() {
-    return (root, _, cb) ->
-        cb.isTrue(root.get("active"));
+  public static Specification<Product> isActive(Boolean isActive) {
+    if (isActive == null) return null;
+    return (root, _, cb) -> cb.equal(root.get("active"), isActive);
   }
 }

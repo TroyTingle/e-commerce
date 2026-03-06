@@ -1,7 +1,7 @@
 package productservice.controllers;
 
-
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +15,6 @@ import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductSearchRequest;
 import productservice.services.ProductService;
 
-import java.util.UUID;
-
 @RestController("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
@@ -25,15 +23,12 @@ public class ProductController {
 
   @GetMapping
   public ResponseEntity<Page<ProductDto>> getAllProducts(
-      @ModelAttribute @Valid ProductSearchRequest searchRequest,
-      Pageable pageable
-  ){
-    return ResponseEntity.ok(productService
-        .getAllProducts(searchRequest, pageable));
+      @ModelAttribute @Valid ProductSearchRequest searchRequest, Pageable pageable) {
+    return ResponseEntity.ok(productService.getAllProducts(searchRequest, pageable));
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ProductDto> getProductById(@RequestParam UUID id){
+  public ResponseEntity<ProductDto> getProductById(@RequestParam UUID id) {
     return ResponseEntity.ok(productService.getProductById(id));
   }
 
