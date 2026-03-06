@@ -3,9 +3,9 @@ server:
 
 spring:
   application:
-    name: user-service
+    name: product-service
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/userdb}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/productdb}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
