@@ -6,8 +6,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import uk.co.ttingle.commonlib.security.JwtUtil;
 import uk.co.ttingle.userservice.repositories.UserRepository;
+import uk.co.ttingle.userservice.util.JwtTokenUtil;
 
 @ExtendWith(MockitoExtension.class)
 class UserAuthServiceTest {
@@ -18,7 +18,7 @@ class UserAuthServiceTest {
 
   @Mock private AuthenticationManager authenticationManager;
 
-  @Mock private JwtUtil jwtUtil;
+  @Mock private JwtTokenUtil jwtUtil;
 
   @InjectMocks private UserAuthService userAuthService;
 }

@@ -1,9 +1,8 @@
 package uk.co.ttingle.commonlib.dto;
 
+import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.Map;
 
 @Getter
 @Builder(toBuilder = true)
