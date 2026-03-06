@@ -12,21 +12,13 @@ import uk.co.ttingle.userservice.repositories.UserRepository;
 @ExtendWith(MockitoExtension.class)
 class UserAuthServiceTest {
 
-  @Mock
-  private UserRepository userRepository;
+  @Mock private UserRepository userRepository;
 
-  @Mock
-  private PasswordEncoder passwordEncoder;
+  @Mock private PasswordEncoder passwordEncoder;
 
-  @Mock
-  private AuthenticationManager authenticationManager;
+  @Mock private AuthenticationManager authenticationManager;
 
-  @Mock
-  private JwtUtil jwtUtil;
+  @Mock private JwtUtil jwtUtil;
 
-  @InjectMocks
-  private UserAuthService userAuthService;
-
-
-
+  @InjectMocks private UserAuthService userAuthService;
 }

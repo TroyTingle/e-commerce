@@ -1,5 +1,10 @@
 package uk.co.ttingle.userservice.controllers;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,16 +14,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import uk.co.ttingle.commonlib.dto.ExceptionDto;
 import uk.co.ttingle.userservice.exceptions.EmailConflictException;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-
 @ExtendWith(MockitoExtension.class)
 class UserAuthControllerAdviceTest {
 
-  @InjectMocks
-  private UserAuthControllerAdvice userAuthControllerAdvice;
+  @InjectMocks private UserAuthControllerAdvice userAuthControllerAdvice;
 
   @Test
   void handleEmailConflictExceptionIsCalled_thenReturnConflictResponse() {
