@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -14,6 +16,7 @@ import productservice.models.Product;
 import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class ProductMapperTest {
 

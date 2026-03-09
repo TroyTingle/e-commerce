@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,7 @@ import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductSearchRequest;
 import productservice.services.ProductService;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class ProductControllerTest {
 

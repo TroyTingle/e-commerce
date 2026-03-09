@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -39,6 +40,7 @@ import productservice.repositories.CategoryRepository;
 import productservice.repositories.ProductRepository;
 import productservice.services.ProductService;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
