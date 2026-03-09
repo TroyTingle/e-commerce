@@ -2,7 +2,6 @@ package productservice.models.dto;
 
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

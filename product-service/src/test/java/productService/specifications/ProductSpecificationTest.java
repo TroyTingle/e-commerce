@@ -14,7 +14,6 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.math.BigDecimal;
-
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,27 +27,16 @@ import productservice.specifications.ProductSpecification;
 @ExtendWith(MockitoExtension.class)
 class ProductSpecificationTest {
 
-  @Mock
-  private Root<Product> root;
-  @Mock
-  private CriteriaQuery<?> query;
-  @Mock
-  private CriteriaBuilder criteriaBuilder;
-  @Mock
-  private Predicate predicate;
-  @Mock
-  private Join<Object, Object> categoryJoin;
-  @Mock
-  private
-  Path<Object> categoryNamePath;
-  @Mock
-  private Path<BigDecimal> pricePath;
-  @Mock
-  private Path<String> namePath;
-  @Mock
-  private Expression<String> lowerNameExpression;
-  @Mock
-  private Path<Boolean> activePath;
+  @Mock private Root<Product> root;
+  @Mock private CriteriaQuery<?> query;
+  @Mock private CriteriaBuilder criteriaBuilder;
+  @Mock private Predicate predicate;
+  @Mock private Join<Object, Object> categoryJoin;
+  @Mock private Path<Object> categoryNamePath;
+  @Mock private Path<BigDecimal> pricePath;
+  @Mock private Path<String> namePath;
+  @Mock private Expression<String> lowerNameExpression;
+  @Mock private Path<Boolean> activePath;
 
   @Test
   void hasCategoryWhenValuePresent_thenBuildsCategoryPredicate() {

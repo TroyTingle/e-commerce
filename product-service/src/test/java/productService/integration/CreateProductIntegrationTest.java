@@ -3,24 +3,17 @@ package productService.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+import java.util.List;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
-import productservice.services.ProductService;
-
-import java.util.List;
 
 @Tag("integration")
 class CreateProductIntegrationTest {
@@ -42,8 +35,13 @@ class CreateProductIntegrationTest {
             .toEntity(ProductDto.class);
 
     assertThat(response.getStatusCode()).isEqualTo(CREATED);
-    assertThat(response.getBody()).isInstanceOf(ProductDto.class)
-        .extracting(ProductDto::getId, ProductDto::getName, ProductDto::getPrice, ProductDto::getDescription)
+    assertThat(response.getBody())
+        .isInstanceOf(ProductDto.class)
+        .extracting(
+            ProductDto::getId,
+            ProductDto::getName,
+            ProductDto::getPrice,
+            ProductDto::getDescription)
         .isEqualTo(List.of());
   }
 
@@ -51,16 +49,17 @@ class CreateProductIntegrationTest {
   void createNewProduct_whenCategoryDoesNotExist_thenThrowNotFoundException() {
     ProductRequest request = Instancio.of(ProductRequest.class).create();
 
-     assertThatThrownBy(() -> restClient
-        .post()
-        .uri(CREATE_PRODUCT_URL)
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(request)
-        .retrieve()
-        .toEntity(HttpClientErrorException.class))
-         .isInstanceOf(HttpClientErrorException.class)
-         .message()
-         .contains("No category found with name");
-
+    assertThatThrownBy(
+            () ->
+                restClient
+                    .post()
+                    .uri(CREATE_PRODUCT_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(request)
+                    .retrieve()
+                    .toEntity(HttpClientErrorException.class))
+        .isInstanceOf(HttpClientErrorException.class)
+        .message()
+        .contains("No category found with name");
   }
 }
