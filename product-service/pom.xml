@@ -14,9 +14,11 @@
   <name>product-service</name>
 
   <properties>
-      <maven.compiler.source>25</maven.compiler.source>
-      <maven.compiler.target>25</maven.compiler.target>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>25</maven.compiler.source>
+    <maven.compiler.target>25</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <testTags>!integration</testTags>
   </properties>
 
   <dependencies>
@@ -83,6 +85,13 @@
       <groupId>org.instancio</groupId>
       <artifactId>instancio-junit</artifactId>
       <version>${instancio.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- H2 for integration tests -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
