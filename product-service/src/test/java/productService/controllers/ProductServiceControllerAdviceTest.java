@@ -18,7 +18,7 @@ import productservice.exceptions.ProductNotFoundException;
 import uk.co.ttingle.commonlib.dto.ExceptionDto;
 
 @ExtendWith(MockitoExtension.class)
-class ProductControllerAdviceTest {
+class ProductServiceControllerAdviceTest {
 
   @InjectMocks private ProductServiceControllerAdvice productControllerAdvice;
 
