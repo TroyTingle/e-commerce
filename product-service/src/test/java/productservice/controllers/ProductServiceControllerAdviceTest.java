@@ -1,4 +1,4 @@
-package productService.controllers;
+package productservice.controllers;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.http.HttpStatus.CONFLICT;
@@ -6,19 +6,20 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import productservice.controllers.ProductServiceControllerAdvice;
 import productservice.exceptions.CategoryNotFoundException;
 import productservice.exceptions.DuplicateSkuException;
 import productservice.exceptions.ProductNotFoundException;
 import uk.co.ttingle.commonlib.dto.ExceptionDto;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
-class ProductControllerAdviceTest {
+class ProductServiceControllerAdviceTest {
 
   @InjectMocks private ProductServiceControllerAdvice productControllerAdvice;
 

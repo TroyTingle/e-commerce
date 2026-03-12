@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import productservice.models.dto.InventoryUpdateRequest;
 import productservice.models.dto.ProductDto;
@@ -20,7 +21,8 @@ import productservice.models.dto.ProductRequest;
 import productservice.services.ProductService;
 
 // TODO: Add @PreAuthorize("hasRole('ADMIN')")
-@RestController("/api/v1/admin/products")
+@RestController
+@RequestMapping("/api/v1/admin/products")
 @RequiredArgsConstructor
 public class AdminProductController {
 

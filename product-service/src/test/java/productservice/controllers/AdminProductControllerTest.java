@@ -1,4 +1,4 @@
-package productService.controllers;
+package productservice.controllers;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,18 +10,19 @@ import static org.springframework.http.HttpStatus.OK;
 
 import java.util.UUID;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import productservice.controllers.AdminProductController;
 import productservice.models.dto.InventoryUpdateRequest;
 import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
 import productservice.services.ProductService;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class AdminProductControllerTest {
 

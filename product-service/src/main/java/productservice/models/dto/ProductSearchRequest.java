@@ -2,11 +2,13 @@ package productservice.models.dto;
 
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductSearchRequest {
   private String category;
 
