@@ -2,27 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>uk.co.ttingle</groupId>
-        <artifactId>ecommerce</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>common-lib</artifactId>
-    <packaging>jar</packaging>
-    <name>common-lib</name>
-    <description>Common library for shared utilities and models</description>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>uk.co.ttingle</groupId>
+    <artifactId>ecommerce</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+  </parent>
 
-    <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <artifactId>common-lib</artifactId>
+  <packaging>jar</packaging>
+  <name>common-lib</name>
+  <description>Common library for shared utilities and models</description>
 
-      <jakarta.validation.version>3.1.1</jakarta.validation.version>
-      <jjwt.version>0.13.0</jjwt.version>
-    </properties>
+  <properties>
+    <jakarta.validation.version>3.1.1</jakarta.validation.version>
+    <jjwt.version>0.13.0</jjwt.version>
+    <junit.api.version>5.14.3</junit.api.version>
+  </properties>
 
   <dependencies>
     <!-- Validation API -->
@@ -56,7 +52,13 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <optional>true</optional>
-      <version>${lombok.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.api.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -79,35 +81,6 @@
             </path>
           </annotationProcessorPaths>
         </configuration>
-      </plugin>
-
-      <!-- Spotless plugin for code formatting -->
-      <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <configuration>
-          <java>
-            <toggleOffOn/>
-            <cleanthat>
-              <sourceJdk>${java.version}</sourceJdk>
-              <mutators>
-                <mutator>SafeAndConsensual</mutator>
-              </mutators>
-            </cleanthat>
-            <googleJavaFormat/>
-            <importOrder/>
-            <removeUnusedImports/>
-            <formatAnnotations/>
-          </java>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
