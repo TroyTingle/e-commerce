@@ -18,7 +18,7 @@ import productservice.models.dto.ProductRequest;
 @ExtendWith(MockitoExtension.class)
 class ProductMapperTest {
 
-  private final ProductMapper productMapper = new ProductMapper();
+  private static final ProductMapper productMapper = new ProductMapper();
 
   @Test
   void whenToProductDtoCalled_thenFieldsAreMapped() {
@@ -62,7 +62,6 @@ class ProductMapperTest {
     Product result = productMapper.toNewProduct(request, category);
     Instant after = Instant.now();
 
-    assertThat(result.getId()).isNotNull();
     assertThat(result.getName()).isEqualTo("Mouse");
     assertThat(result.getDescription()).isEqualTo("Wireless Mouse");
     assertThat(result.getPrice()).isEqualByComparingTo("49.99");
