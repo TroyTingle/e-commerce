@@ -1,5 +1,7 @@
 package productservice.mappers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -7,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import productservice.models.Category;
 import productservice.models.dto.CategoryDto;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
