@@ -1,4 +1,4 @@
-package productService.controllers;
+package productservice.controllers;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import productservice.controllers.AdminProductController;
 import productservice.models.dto.InventoryUpdateRequest;
 import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductRequest;

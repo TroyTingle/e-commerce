@@ -1,4 +1,4 @@
-package productService.controllers;
+package productservice.controllers;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import productservice.controllers.ProductController;
 import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductSearchRequest;
 import productservice.services.ProductService;

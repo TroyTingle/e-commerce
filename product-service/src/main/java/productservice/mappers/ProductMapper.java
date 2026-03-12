@@ -1,7 +1,6 @@
 package productservice.mappers;
 
 import static java.time.Instant.now;
-import static java.util.UUID.randomUUID;
 
 import org.springframework.stereotype.Component;
 import productservice.models.Category;
@@ -25,7 +24,6 @@ public class ProductMapper {
 
   public Product toNewProduct(ProductRequest request, Category category) {
     return Product.builder()
-        .id(randomUUID())
         .name(request.getName())
         .description(request.getDescription())
         .price(request.getPrice())

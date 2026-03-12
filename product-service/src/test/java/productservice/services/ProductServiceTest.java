@@ -1,4 +1,4 @@
-package productService.services;
+package productservice.services;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +38,6 @@ import productservice.models.dto.ProductRequest;
 import productservice.models.dto.ProductSearchRequest;
 import productservice.repositories.CategoryRepository;
 import productservice.repositories.ProductRepository;
-import productservice.services.ProductService;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

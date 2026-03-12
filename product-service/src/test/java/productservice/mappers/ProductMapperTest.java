@@ -1,4 +1,4 @@
-package productService.mappers;
+package productservice.mappers;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import productservice.mappers.ProductMapper;
 import productservice.models.Category;
 import productservice.models.Product;
 import productservice.models.dto.ProductDto;
