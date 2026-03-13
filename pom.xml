@@ -32,6 +32,8 @@
       <plugin.checkstyle.version>3.3.0</plugin.checkstyle.version>
       <plugin.spotless.version>3.2.1</plugin.spotless.version>
       <plugin.jacoco.version>0.8.14</plugin.jacoco.version>
+
+      <testTags>!integration</testTags>
     </properties>
 
   <dependencyManagement>
@@ -101,7 +103,8 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${plugin.maven.surefire.version}</version>
           <configuration>
-            <excludedGroups>integration</excludedGroups>
+            <groups>${testTags}</groups>
+            <argLine>@{argLine}</argLine>
           </configuration>
         </plugin>
 
