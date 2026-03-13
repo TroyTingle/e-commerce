@@ -1,0 +1,139 @@
+services:
+  user-service:
+    build: ../../user-service
+    ports:
+      - "8081:8080"
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/userdb
+      - DATABASE_USERNAME=user
+      - DATABASE_PASSWORD=password
+      - JWT_SECRET=your_very_secret_jwt_secret_key
+    depends_on:
+      postgres:
+        condition: service_started
+    cap_drop:
+      - ALL
+
+  product-service:
+    build: ../../product-service
+    ports:
+      - "8082:8080"
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/productdb
+      - DATABASE_USERNAME=user
+      - DATABASE_PASSWORD=password
+      - JWT_SECRET=your_very_secret_jwt_secret_key
+    depends_on:
+      postgres:
+        condition: service_started
+    cap_drop:
+      - ALL
+
+  order-service:
+    build: ../../order-service
+    ports:
+      - "8083:8080"
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/orderdb
+      - DATABASE_USERNAME=user
+      - DATABASE_PASSWORD=password
+    depends_on:
+      postgres:
+        condition: service_started
+      kafka-broker:
+        condition: service_started
+    cap_drop:
+      - ALL
+
+  postgres:
+    image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database-setup:/docker-entrypoint-initdb.d
+    cap_drop:
+      - ALL
+
+  kafka-broker:
+    image: apache/kafka:latest
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: kafka-topics --bootstrap-server kafka-broker:29092 --list
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "9001:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-broker:29092
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9997
+      DYNAMIC_CONFIGS_ENABLED: 'true'
+    cap_drop:
+      - ALL
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: [ "--config=/etc/otelcol/config.yaml" ]
+    volumes:
+      - ./otel/otelcol-config.yaml:/etc/otelcol/config.yml:ro
+    ports:
+      - "4318:4318"
+      - "4317:4317"
+      - "9464:9464"
+    depends_on:
+      user-service:
+        condition: service_started
+      product-service:
+        condition: service_started
+      order-service:
+        condition: service_started
+    cap_drop:
+      - ALL
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./otel/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      otel-collector:
+        condition: service_started
+    cap_drop:
+      - ALL
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      GRAFANA_ORD_ID: 1
+    volumes:
+      - ./otel/grafana.ini:/etc/grafana/grafana.ini:ro
+    depends_on:
+      prometheus:
+        condition: service_started
+    cap_drop:
+      - ALL
