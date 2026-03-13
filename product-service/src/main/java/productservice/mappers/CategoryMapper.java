@@ -1,8 +1,10 @@
 package productservice.mappers;
 
+import org.springframework.stereotype.Component;
 import productservice.models.Category;
 import productservice.models.dto.CategoryDto;
 
+@Component
 public class CategoryMapper {
 
   public CategoryDto toCategoryDto(Category category) {
