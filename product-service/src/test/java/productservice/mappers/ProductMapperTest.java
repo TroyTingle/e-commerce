@@ -19,7 +19,8 @@ import productservice.models.dto.ProductRequest;
 class ProductMapperTest {
 
   private static final ProductMapper productMapper = new ProductMapper();
-
+  private static final String PRODUCT_CURRENCY = "GBP";
+  
   @Test
   void whenToProductDtoCalled_thenFieldsAreMapped() {
     Category category = Category.builder().id(randomUUID()).name("Books").build();
@@ -29,6 +30,7 @@ class ProductMapperTest {
             .name("Refactoring")
             .description("Book")
             .price(BigDecimal.valueOf(29.99))
+            .currency(PRODUCT_CURRENCY)
             .sku("BOOK-001")
             .inventoryQuantity(25)
             .active(true)
@@ -41,6 +43,7 @@ class ProductMapperTest {
     assertThat(result.getName()).isEqualTo("Refactoring");
     assertThat(result.getDescription()).isEqualTo("Book");
     assertThat(result.getPrice()).isEqualByComparingTo("29.99");
+    assertThat(result.getCurrency()).isEqualTo(PRODUCT_CURRENCY);
     assertThat(result.getSku()).isEqualTo("BOOK-001");
     assertThat(result.getCategory()).isEqualTo("Books");
   }
@@ -52,6 +55,7 @@ class ProductMapperTest {
             .name("Mouse")
             .description("Wireless Mouse")
             .price(BigDecimal.valueOf(49.99))
+            .currency(PRODUCT_CURRENCY)
             .sku("MOUSE-001")
             .inventoryQuantity(7)
             .categoryName("Electronics")
@@ -65,6 +69,7 @@ class ProductMapperTest {
     assertThat(result.getName()).isEqualTo("Mouse");
     assertThat(result.getDescription()).isEqualTo("Wireless Mouse");
     assertThat(result.getPrice()).isEqualByComparingTo("49.99");
+    assertThat(result.getCurrency()).isEqualTo(PRODUCT_CURRENCY);
     assertThat(result.getSku()).isEqualTo("MOUSE-001");
     assertThat(result.getInventoryQuantity()).isEqualTo(7);
     assertThat(result.getActive()).isTrue();
@@ -82,6 +87,7 @@ class ProductMapperTest {
             .name("Old Name")
             .description("Old Description")
             .price(BigDecimal.valueOf(9.99))
+            .currency(PRODUCT_CURRENCY)
             .sku("OLD-001")
             .inventoryQuantity(1)
             .active(false)
@@ -95,6 +101,7 @@ class ProductMapperTest {
             .name("New Name")
             .description("New Description")
             .price(BigDecimal.valueOf(19.99))
+            .currency(PRODUCT_CURRENCY)
             .sku("NEW-001")
             .inventoryQuantity(99)
             .categoryName("New Category")
@@ -109,6 +116,7 @@ class ProductMapperTest {
     assertThat(result.getName()).isEqualTo("New Name");
     assertThat(result.getDescription()).isEqualTo("New Description");
     assertThat(result.getPrice()).isEqualByComparingTo("19.99");
+    assertThat(result.getCurrency()).isEqualTo(PRODUCT_CURRENCY);
     assertThat(result.getSku()).isEqualTo("NEW-001");
     assertThat(result.getInventoryQuantity()).isEqualTo(99);
     assertThat(result.getActive()).isFalse();

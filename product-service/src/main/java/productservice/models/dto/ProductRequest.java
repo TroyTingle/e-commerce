@@ -19,6 +19,7 @@ public class ProductRequest {
   @NotBlank private String name;
   @NotBlank private String description;
   @NotNull @Positive private BigDecimal price;
+  @NotBlank private String currency;
   @NotBlank private String sku;
   @NotNull @PositiveOrZero private Integer inventoryQuantity;
   @NotBlank private String categoryName;

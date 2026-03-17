@@ -49,6 +49,7 @@ class CreateProductIntegrationTest extends BaseIntegrationTest {
         .extracting(
             ProductDto::getName,
             ProductDto::getPrice,
+            ProductDto::getCurrency,
             ProductDto::getDescription,
             ProductDto::getCategory,
             ProductDto::getSku)
@@ -56,6 +57,7 @@ class CreateProductIntegrationTest extends BaseIntegrationTest {
             List.of(
                 request.getName(),
                 request.getPrice(),
+                request.getCurrency(),
                 request.getDescription(),
                 request.getCategoryName(),
                 request.getSku()));
