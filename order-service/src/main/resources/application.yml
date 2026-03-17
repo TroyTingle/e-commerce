@@ -33,3 +33,7 @@ logging:
     com.shopsphere: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger - %msg%n"
+
+product-service:
+  grpc:
+    address: ${PRODUCT_SERVICE_GRPC_ADDRESS:product-service:9090}
