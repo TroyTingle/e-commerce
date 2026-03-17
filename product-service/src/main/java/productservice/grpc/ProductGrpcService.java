@@ -40,13 +40,19 @@ public class ProductGrpcService extends ProductServiceGrpc.ProductServiceImplBas
       responseObserver.onCompleted();
     } catch (IllegalArgumentException ex) {
       responseObserver.onError(
-          Status.INVALID_ARGUMENT.withDescription("Invalid product id").withCause(ex).asRuntimeException());
+          Status.INVALID_ARGUMENT
+              .withDescription("Invalid product id")
+              .withCause(ex)
+              .asRuntimeException());
     } catch (ProductNotFoundException ex) {
       responseObserver.onError(
           Status.NOT_FOUND.withDescription(ex.getMessage()).withCause(ex).asRuntimeException());
     } catch (Exception ex) {
       responseObserver.onError(
-          Status.INTERNAL.withDescription("Failed to resolve product price").withCause(ex).asRuntimeException());
+          Status.INTERNAL
+              .withDescription("Failed to resolve product price")
+              .withCause(ex)
+              .asRuntimeException());
     }
   }
 

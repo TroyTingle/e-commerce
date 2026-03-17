@@ -20,7 +20,7 @@ class ProductMapperTest {
 
   private static final ProductMapper productMapper = new ProductMapper();
   private static final String PRODUCT_CURRENCY = "GBP";
-  
+
   @Test
   void whenToProductDtoCalled_thenFieldsAreMapped() {
     Category category = Category.builder().id(randomUUID()).name("Books").build();

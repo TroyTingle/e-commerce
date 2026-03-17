@@ -1,5 +1,7 @@
 package orderservice.services;
 
+import static java.time.Instant.now;
+
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +13,6 @@ import orderservice.models.dto.OrderResponse;
 import orderservice.models.dto.OrderUpdateRequest;
 import orderservice.repositories.OrderRepository;
 import org.springframework.stereotype.Service;
-
-import static java.time.Instant.now;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +28,7 @@ public class OrderService {
   }
 
   public List<OrderResponse> getOrdersForUser(UUID userId) {
-    return orderRepository.findAllByUserId(userId)
-        .stream()
+    return orderRepository.findAllByUserId(userId).stream()
         .map(orderMapper::toOrderResponse)
         .toList();
   }
@@ -37,18 +36,18 @@ public class OrderService {
   public void updateOrderStatus(UUID orderId, OrderUpdateRequest orderUpdate) {
     Order order = findOrderByIdOrThrow(orderId);
 
-    Order updatedOrder = order.toBuilder()
-        .status(orderUpdate.getNewStatus())
-        .updatedAt(now())
-        .build();
+    Order updatedOrder =
+        order.toBuilder().status(orderUpdate.getNewStatus()).updatedAt(now()).build();
 
     orderRepository.save(updatedOrder);
   }
 
-
   private Order findOrderByIdOrThrow(UUID orderId) {
-    return orderRepository.findById(orderId)
-        .orElseThrow(() ->
-            new OrderNotFoundException(String.format("Order could not be found with id %s", orderId)));
+    return orderRepository
+        .findById(orderId)
+        .orElseThrow(
+            () ->
+                new OrderNotFoundException(
+                    String.format("Order could not be found with id %s", orderId)));
   }
 }
