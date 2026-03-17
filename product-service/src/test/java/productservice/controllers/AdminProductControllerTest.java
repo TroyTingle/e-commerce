@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import productservice.models.dto.InventoryUpdateRequest;
-import productservice.models.dto.ProductDto;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
 import productservice.services.ProductService;
 

@@ -1,4 +1,4 @@
-package productservice.models.dto;
+package uk.co.ttingle.commonlib.dto;
 
 import java.math.BigDecimal;
 import java.util.UUID;

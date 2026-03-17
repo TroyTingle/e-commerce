@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import productservice.integration.testdata.CreateProductData;
 import productservice.models.Category;
-import productservice.models.dto.ProductDto;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
 
 @Tag("integration")

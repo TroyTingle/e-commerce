@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import productservice.models.dto.InventoryUpdateRequest;
-import productservice.models.dto.ProductDto;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
 import productservice.services.ProductService;
 

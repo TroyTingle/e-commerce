@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import productservice.models.dto.ProductDto;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 import productservice.models.dto.ProductSearchRequest;
 import productservice.services.ProductService;
 

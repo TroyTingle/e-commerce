@@ -11,7 +11,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.grpc.server.service.GrpcService;
 import productservice.exceptions.ProductNotFoundException;
-import productservice.models.dto.ProductDto;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 import productservice.services.ProductService;
 
 @GrpcService

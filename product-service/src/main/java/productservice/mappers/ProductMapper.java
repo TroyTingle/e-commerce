@@ -5,7 +5,7 @@ import static java.time.Instant.now;
 import org.springframework.stereotype.Component;
 import productservice.models.Category;
 import productservice.models.Product;
-import productservice.models.dto.ProductDto;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
 
 @Component
