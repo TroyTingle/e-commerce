@@ -24,7 +24,7 @@ public class OrderService {
   public OrderResponse createOrder(OrderRequestDto orderRequest) {}
 
   public OrderResponse getOrderById(UUID orderId) {
-    return orderMapper.toOrderResponse(findOrderById(orderId));
+    return orderMapper.toOrderResponse(findOrderByIdOrThrow(orderId));
   }
 
   public List<OrderResponse> getOrdersForUser(UUID userId) {
@@ -35,7 +35,7 @@ public class OrderService {
   }
 
   public void updateOrderStatus(UUID orderId, OrderUpdateRequest orderUpdate) {
-    Order order = findOrderById(orderId);
+    Order order = findOrderByIdOrThrow(orderId);
 
     Order updatedOrder = order.toBuilder()
         .status(orderUpdate.getNewStatus())
@@ -46,7 +46,7 @@ public class OrderService {
   }
 
 
-  private Order findOrderById(UUID orderId) {
+  private Order findOrderByIdOrThrow(UUID orderId) {
     return orderRepository.findById(orderId)
         .orElseThrow(() ->
             new OrderNotFoundException(String.format("Order could not be found with id %s", orderId)));
