@@ -21,7 +21,10 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final OrderMapper orderMapper;
 
-  public OrderResponse createOrder(OrderRequestDto orderRequest) {}
+  public OrderResponse createOrder(OrderRequestDto orderRequest, UUID userId) {
+    Order order = orderMapper.toNewOrder(orderRequest, userId);
+    return orderMapper.toOrderResponse(orderRepository.save(order));
+  }
 
   public OrderResponse getOrderById(UUID orderId) {
     return orderMapper.toOrderResponse(findOrderByIdOrThrow(orderId));
