@@ -4,11 +4,14 @@ import static uk.co.ttingle.commonlib.security.JwtConstants.BEARER;
 import static uk.co.ttingle.userservice.enums.Role.CUSTOMER;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import uk.co.ttingle.commonlib.security.JwtTokenUtil;
 import uk.co.ttingle.userservice.exceptions.EmailConflictException;
 import uk.co.ttingle.userservice.models.User;
 import uk.co.ttingle.userservice.models.dto.AuthResponse;
@@ -16,7 +19,6 @@ import uk.co.ttingle.userservice.models.dto.LoginRequest;
 import uk.co.ttingle.userservice.models.dto.RegisterRequest;
 import uk.co.ttingle.userservice.models.dto.UserDto;
 import uk.co.ttingle.userservice.repositories.UserRepository;
-import uk.co.ttingle.userservice.util.JwtTokenUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +58,15 @@ public class UserAuthService {
         new UsernamePasswordAuthenticationToken(
             loginRequest.getEmail(), loginRequest.getPassword()));
 
-    String token = jwtUtil.generateToken(loginRequest.getEmail());
+    User user =
+        userRepository
+            .findByEmail(loginRequest.getEmail())
+            .orElseThrow(
+                () ->
+                    new UsernameNotFoundException(
+                        "User not found with email: " + loginRequest.getEmail()));
+
+    String token = jwtUtil.generateUserToken(user.getId(), user.getEmail(), List.of(user.getRole().name()));
     return AuthResponse.builder().token(token).type(BEARER).build();
   }
 }

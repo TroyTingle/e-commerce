@@ -34,6 +34,11 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger - %msg%n"
 
+security:
+  jwt:
+    secret: ${JWT_SECRET:your_very_secret_jwt_secret_key}
+    expiration: 3600000 # 1 hour in milliseconds
+
 product-service:
   grpc:
     address: ${PRODUCT_SERVICE_GRPC_ADDRESS:product-service:9090}
