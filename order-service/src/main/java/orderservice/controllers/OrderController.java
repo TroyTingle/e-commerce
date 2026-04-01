@@ -12,6 +12,7 @@ import orderservice.models.dto.OrderResponse;
 import orderservice.models.dto.OrderUpdateRequest;
 import orderservice.services.OrderService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,8 +30,9 @@ public class OrderController {
 
   @PostMapping
   public ResponseEntity<OrderResponse> createOrder(
-      @RequestBody @Valid OrderRequestDto orderRequestDto) {
-    return ResponseEntity.status(CREATED).body(orderService.createOrder(orderRequestDto));
+      @RequestBody @Valid OrderRequestDto orderRequestDto,
+      @AuthenticationPrincipal UUID userId) {
+    return ResponseEntity.status(CREATED).body(orderService.createOrder(orderRequestDto, userId));
   }
 
   @GetMapping("/{orderId}")
@@ -39,13 +41,14 @@ public class OrderController {
   }
 
   @GetMapping
-  public ResponseEntity<List<OrderResponse>> getAllOrdersForUser(UUID userId) {
+  public ResponseEntity<List<OrderResponse>> getAllOrdersForUser(
+      @AuthenticationPrincipal UUID userId) {
     return ResponseEntity.ok(orderService.getOrdersForUser(userId));
   }
 
   @PatchMapping("/{orderId}")
   public ResponseEntity<OrderResponse> updateOrderStatus(
-      @PathVariable("userId") UUID orderId, @RequestBody @Valid OrderUpdateRequest orderUpdate) {
+      @PathVariable("orderId") UUID orderId, @RequestBody @Valid OrderUpdateRequest orderUpdate) {
     orderService.updateOrderStatus(orderId, orderUpdate);
     return ResponseEntity.status(NO_CONTENT).build();
   }
