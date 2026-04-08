@@ -1,16 +1,16 @@
 package orderservice.models.dto;
 
+import jakarta.validation.constraints.Positive;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItemRequest {
 
-  private UUID productId;
-  private Integer quantity;
+  @org.hibernate.validator.constraints.UUID private UUID productId;
+  @Positive private Integer quantity;
 }

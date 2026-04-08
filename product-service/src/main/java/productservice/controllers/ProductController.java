@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductSearchRequest;
 import productservice.services.ProductService;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -30,7 +29,7 @@ public class ProductController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ProductDto> getProductById(@RequestParam UUID id) {
+  public ResponseEntity<ProductDto> getProductById(@PathVariable UUID id) {
     return ResponseEntity.ok(productService.getProductById(id));
   }
 

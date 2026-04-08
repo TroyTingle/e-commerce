@@ -1,15 +1,15 @@
 package orderservice.models.dto;
 
+import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequestDto {
 
-  private List<OrderItemRequest> items;
+  @Size(min = 1) private List<OrderItemRequest> items;
 }

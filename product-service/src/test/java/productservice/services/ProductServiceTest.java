@@ -33,11 +33,11 @@ import productservice.mappers.ProductMapper;
 import productservice.models.Category;
 import productservice.models.Product;
 import productservice.models.dto.InventoryUpdateRequest;
-import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
 import productservice.models.dto.ProductSearchRequest;
 import productservice.repositories.CategoryRepository;
 import productservice.repositories.ProductRepository;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
@@ -46,6 +46,7 @@ class ProductServiceTest {
   private static final UUID PRODUCT_ID = randomUUID();
   private static final String PRODUCT_SKU = "SKU-123";
   private static final String CATEGORY_NAME = "Electronics";
+  private static final String CURRENCY = "GBP";
 
   @Mock private CategoryRepository categoryRepository;
   @Mock private ProductRepository productRepository;
@@ -279,6 +280,7 @@ class ProductServiceTest {
         .set(field(Product::getId), PRODUCT_ID)
         .set(field(Product::getSku), PRODUCT_SKU)
         .set(field(Product::getCategory), category)
+        .set(field(Product::getCurrency), CURRENCY)
         .set(field(Product::getActive), true)
         .create();
   }
@@ -287,6 +289,7 @@ class ProductServiceTest {
     return Instancio.of(ProductRequest.class)
         .set(field(ProductRequest::getSku), PRODUCT_SKU)
         .set(field(ProductRequest::getCategoryName), CATEGORY_NAME)
+        .set(field(ProductRequest::getCurrency), CURRENCY)
         .create();
   }
 
@@ -295,6 +298,7 @@ class ProductServiceTest {
         .set(field(ProductDto::getId), PRODUCT_ID)
         .set(field(ProductDto::getSku), PRODUCT_SKU)
         .set(field(ProductDto::getCategory), CATEGORY_NAME)
+        .set(field(ProductDto::getCurrency), CURRENCY)
         .create();
   }
 

@@ -5,8 +5,8 @@ import static java.time.Instant.now;
 import org.springframework.stereotype.Component;
 import productservice.models.Category;
 import productservice.models.Product;
-import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 
 @Component
 public class ProductMapper {
@@ -17,6 +17,7 @@ public class ProductMapper {
         .name(product.getName())
         .description(product.getDescription())
         .price(product.getPrice())
+        .currency(product.getCurrency())
         .sku(product.getSku())
         .category(product.getCategory().getName())
         .build();
@@ -27,6 +28,7 @@ public class ProductMapper {
         .name(request.getName())
         .description(request.getDescription())
         .price(request.getPrice())
+        .currency(request.getCurrency())
         .sku(request.getSku())
         .inventoryQuantity(request.getInventoryQuantity())
         .active(true)
@@ -42,6 +44,7 @@ public class ProductMapper {
         .name(request.getName())
         .description(request.getDescription())
         .price(request.getPrice())
+        .currency(request.getCurrency())
         .sku(request.getSku())
         .inventoryQuantity(request.getInventoryQuantity())
         .active(existingProduct.getActive())

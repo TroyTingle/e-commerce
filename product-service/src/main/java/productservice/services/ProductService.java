@@ -20,11 +20,11 @@ import productservice.mappers.ProductMapper;
 import productservice.models.Category;
 import productservice.models.Product;
 import productservice.models.dto.InventoryUpdateRequest;
-import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
 import productservice.models.dto.ProductSearchRequest;
 import productservice.repositories.CategoryRepository;
 import productservice.repositories.ProductRepository;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 
 @Service
 @RequiredArgsConstructor

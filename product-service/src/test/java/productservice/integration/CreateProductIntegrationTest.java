@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import productservice.integration.testdata.CreateProductData;
 import productservice.models.Category;
-import productservice.models.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 
 @Tag("integration")
 class CreateProductIntegrationTest extends BaseIntegrationTest {
@@ -49,6 +49,7 @@ class CreateProductIntegrationTest extends BaseIntegrationTest {
         .extracting(
             ProductDto::getName,
             ProductDto::getPrice,
+            ProductDto::getCurrency,
             ProductDto::getDescription,
             ProductDto::getCategory,
             ProductDto::getSku)
@@ -56,6 +57,7 @@ class CreateProductIntegrationTest extends BaseIntegrationTest {
             List.of(
                 request.getName(),
                 request.getPrice(),
+                request.getCurrency(),
                 request.getDescription(),
                 request.getCategoryName(),
                 request.getSku()));

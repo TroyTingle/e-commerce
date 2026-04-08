@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package ecommerce.product.v1;
+
+option java_multiple_files = true;
+option java_package = "ecommerce.product.v1";
+
+service ProductService {
+  rpc GetProductByUuid(ProductRequest) returns (ProductResponse);
+}
+
+message ProductRequest {
+  string product_id = 1;
+}
+
+message ProductResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  // Price in minor units (e.g., cents for USD).
+  int64 price = 4;
+  string sku = 5;
+  string category = 6;
+  // ISO 4217 currency code (e.g., USD).
+  string currency = 7;
+}
