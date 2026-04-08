@@ -60,21 +60,23 @@ public class OrderMapper {
     }
 
     return items.stream()
-        .map(item -> item.getPriceAtPurchase()
-            .multiply(BigDecimal.valueOf(item.getQuantity())))
+        .map(item -> item.getPriceAtPurchase().multiply(BigDecimal.valueOf(item.getQuantity())))
         .reduce(ZERO, BigDecimal::add);
   }
 
   private List<OrderItem> toOrderItems(List<OrderItemRequest> items) {
-    return items.stream().map(item -> {
-      ProductDto product = productServiceClient.getProductByUuid(item.getProductId());
+    return items.stream()
+        .map(
+            item -> {
+              ProductDto product = productServiceClient.getProductByUuid(item.getProductId());
 
-      return OrderItem.builder()
-          .productId(item.getProductId())
-          .productNameAtPurchase(product.getName())
-          .quantity(item.getQuantity())
-          .priceAtPurchase(product.getPrice())
-          .build();
-    }).toList();
+              return OrderItem.builder()
+                  .productId(item.getProductId())
+                  .productNameAtPurchase(product.getName())
+                  .quantity(item.getQuantity())
+                  .priceAtPurchase(product.getPrice())
+                  .build();
+            })
+        .toList();
   }
 }

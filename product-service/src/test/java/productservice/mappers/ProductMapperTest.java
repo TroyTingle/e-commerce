@@ -11,8 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import productservice.models.Category;
 import productservice.models.Product;
-import uk.co.ttingle.commonlib.dto.ProductDto;
 import productservice.models.dto.ProductRequest;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

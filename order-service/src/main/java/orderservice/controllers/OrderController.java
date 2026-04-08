@@ -30,8 +30,7 @@ public class OrderController {
 
   @PostMapping
   public ResponseEntity<OrderResponse> createOrder(
-      @RequestBody @Valid OrderRequestDto orderRequestDto,
-      @AuthenticationPrincipal UUID userId) {
+      @RequestBody @Valid OrderRequestDto orderRequestDto, @AuthenticationPrincipal UUID userId) {
     return ResponseEntity.status(CREATED).body(orderService.createOrder(orderRequestDto, userId));
   }
 
