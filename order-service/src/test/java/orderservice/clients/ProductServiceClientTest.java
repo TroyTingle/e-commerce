@@ -27,11 +27,9 @@ class ProductServiceClientTest {
 
   private static final UUID PRODUCT_ID = randomUUID();
 
-  @Mock
-  private ProductServiceGrpc.ProductServiceBlockingStub productServiceStub;
+  @Mock private ProductServiceGrpc.ProductServiceBlockingStub productServiceStub;
 
-  @InjectMocks
-  private ProductServiceClient productServiceClient;
+  @InjectMocks private ProductServiceClient productServiceClient;
 
   @Test
   void whenGetProductByUuidCalled_thenMappedProductDtoReturned() {
