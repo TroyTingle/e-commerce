@@ -22,7 +22,7 @@ jobs:
           cache: maven
 
       - name: Run unit tests
-        run: mvn test
+        run: mvn clean test
 
       - name: Run integration tests
         run: mvn -DtestTags=integration test

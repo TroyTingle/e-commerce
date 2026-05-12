@@ -44,6 +44,7 @@ public class OrderMapper {
 
   public Order toNewOrder(OrderRequestDto orderRequestDto, UUID userId) {
     List<OrderItem> items = toOrderItems(orderRequestDto.getItems());
+
     return Order.builder()
         .userId(userId)
         .status(CREATED)

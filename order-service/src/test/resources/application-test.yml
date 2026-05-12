@@ -5,4 +5,9 @@ spring:
 
 security:
   jwt:
-    secret: integration_test_secret_key_32_chars_minimum
+    secret: test_secret_key_for_order_service_tests_which_is_long_enough
+    expiration: 3600000
+
+product-service:
+  grpc:
+    address: localhost:9090

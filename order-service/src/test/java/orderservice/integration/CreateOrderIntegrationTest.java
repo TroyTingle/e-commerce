@@ -1,121 +1,98 @@
 package orderservice.integration;
 
+import static java.util.UUID.randomUUID;
+import static orderservice.enums.OrderStatus.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.field;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import orderservice.integration.testdata.OrderData;
+import orderservice.models.Order;
 import orderservice.models.dto.OrderItemRequest;
 import orderservice.models.dto.OrderRequestDto;
 import orderservice.models.dto.OrderResponse;
-import org.instancio.Instancio;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Tag("integration")
 class CreateOrderIntegrationTest extends BaseIntegrationTest {
 
-  private static final String ORDERS_URL = "/api/v1/orders";
-
-  @Autowired private OrderData orderData;
-
   @Test
-  void createOrder_whenAuthenticatedAndProductsExist_thenReturnCreatedOrder() {
-    UUID userId = UUID.randomUUID();
-    UUID firstProductId = UUID.randomUUID();
-    UUID secondProductId = UUID.randomUUID();
-
+  @Transactional
+  void createNewOrder_whenProductsExist_thenReturnOrderResponseAndPersistItems() {
+    UUID keyboardId = randomUUID();
+    UUID mouseId = randomUUID();
     OrderRequestDto request =
-        Instancio.of(OrderRequestDto.class)
-            .set(
-                field(OrderRequestDto::getItems),
-                List.of(
-                    new OrderItemRequest(firstProductId, 2),
-                    new OrderItemRequest(secondProductId, 1)))
-            .create();
+        new OrderRequestDto(
+            List.of(new OrderItemRequest(keyboardId, 2), new OrderItemRequest(mouseId, 3)));
 
-    when(productServiceStub.getProductByUuid(orderData.productRequest(firstProductId)))
-        .thenReturn(orderData.productResponse(firstProductId, "Keyboard", "10.50"));
-    when(productServiceStub.getProductByUuid(orderData.productRequest(secondProductId)))
-        .thenReturn(orderData.productResponse(secondProductId, "Mouse", "5.25"));
+    when(productServiceClient.getProductByUuid(keyboardId))
+        .thenReturn(buildProduct(keyboardId, "Keyboard", BigDecimal.valueOf(10.99)));
+    when(productServiceClient.getProductByUuid(mouseId))
+        .thenReturn(buildProduct(mouseId, "Mouse", BigDecimal.valueOf(5.25)));
 
     ResponseEntity<OrderResponse> response =
         orderServiceClient
             .post()
-            .uri(ORDERS_URL)
-            .headers(headers -> headers.addAll(authHeaders(userId)))
-            .contentType(MediaType.APPLICATION_JSON)
+            .uri(ORDER_URL)
+            .contentType(APPLICATION_JSON)
             .body(request)
             .retrieve()
             .toEntity(OrderResponse.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(CREATED);
-    assertThat(response.getBody())
-        .isNotNull()
-        .extracting(
-            OrderResponse::getUserId, OrderResponse::getOrderStatus, OrderResponse::getTotalPrice)
-        .isEqualTo(
-            List.of(
-                userId, orderservice.enums.OrderStatus.CREATED, new java.math.BigDecimal("26.25")));
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getUserId()).isEqualTo(userId);
+    assertThat(response.getBody().getOrderStatus()).isEqualTo(CREATED);
+    assertThat(response.getBody().getTotalPrice()).isEqualByComparingTo("37.73");
     assertThat(response.getBody().getItems())
-        .extracting(item -> item.getProductName(), item -> item.getQuantity())
-        .containsExactly(
-            org.assertj.core.groups.Tuple.tuple("Keyboard", 2),
-            org.assertj.core.groups.Tuple.tuple("Mouse", 1));
+        .extracting("productName", "quantity")
+        .containsExactlyInAnyOrder(tuple("Keyboard", 2), tuple("Mouse", 3));
   }
 
   @Test
-  void createOrder_thenCreatedOrderCanBeFetchedById() {
-    UUID userId = UUID.randomUUID();
-    UUID productId = UUID.randomUUID();
+  void createNewOrder_whenItemsAreEmpty_thenReturnBadRequest() {
+    OrderRequestDto request = new OrderRequestDto(List.of());
 
-    OrderRequestDto request =
-        Instancio.of(OrderRequestDto.class)
-            .set(field(OrderRequestDto::getItems), List.of(new OrderItemRequest(productId, 3)))
-            .create();
+    assertThatThrownBy(
+            () ->
+                orderServiceClient
+                    .post()
+                    .uri(ORDER_URL)
+                    .contentType(APPLICATION_JSON)
+                    .body(request)
+                    .retrieve()
+                    .toBodilessEntity())
+        .isInstanceOf(HttpClientErrorException.BadRequest.class)
+        .message()
+        .contains("items");
 
-    when(productServiceStub.getProductByUuid(orderData.productRequest(productId)))
-        .thenReturn(orderData.productResponse(productId, "Headphones", "12.00"));
+    verify(productServiceClient, never()).getProductByUuid(org.mockito.ArgumentMatchers.any());
+  }
 
-    OrderResponse createdOrder =
-        orderServiceClient
-            .post()
-            .uri(ORDERS_URL)
-            .headers(headers -> headers.addAll(authHeaders(userId)))
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(request)
-            .retrieve()
-            .body(OrderResponse.class);
+  @Test
+  void createNewOrder_whenUnauthenticated_thenReturnUnauthorized() {
+    OrderRequestDto request = new OrderRequestDto(List.of(new OrderItemRequest(randomUUID(), 1)));
 
-    OrderResponse fetchedOrder =
-        orderServiceClient
-            .get()
-            .uri(ORDERS_URL + "/" + createdOrder.getOrderId())
-            .headers(headers -> headers.addAll(authHeaders(userId)))
-            .retrieve()
-            .body(OrderResponse.class);
-
-    assertThat(fetchedOrder)
-        .isNotNull()
-        .extracting(
-            OrderResponse::getOrderId,
-            OrderResponse::getUserId,
-            OrderResponse::getOrderStatus,
-            OrderResponse::getTotalPrice)
-        .isEqualTo(
-            List.of(
-                createdOrder.getOrderId(),
-                userId,
-                orderservice.enums.OrderStatus.CREATED,
-                new java.math.BigDecimal("36.00")));
-    assertThat(fetchedOrder.getItems())
-        .extracting(item -> item.getProductName(), item -> item.getQuantity())
-        .containsExactly(org.assertj.core.groups.Tuple.tuple("Headphones", 3));
+    assertThatThrownBy(
+            () ->
+                unauthenticatedOrderServiceClient
+                    .post()
+                    .uri(ORDER_URL)
+                    .contentType(APPLICATION_JSON)
+                    .body(request)
+                    .retrieve()
+                    .toBodilessEntity())
+        .isInstanceOf(HttpClientErrorException.Unauthorized.class);
   }
 }

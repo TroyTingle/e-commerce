@@ -1,19 +1,15 @@
 package orderservice.services;
 
-import static java.time.Instant.now;
-import static orderservice.enums.OrderStatus.CANCELLED;
+import static java.util.UUID.randomUUID;
 import static orderservice.enums.OrderStatus.CREATED;
-import static org.instancio.Select.field;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static orderservice.enums.OrderStatus.PAID;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -33,127 +29,150 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
+  private static final UUID USER_ID = randomUUID();
+  private static final UUID ORDER_ID = randomUUID();
+
   @Mock private OrderRepository orderRepository;
   @Mock private OrderMapper orderMapper;
-
   @InjectMocks private OrderService orderService;
 
   @Test
-  void createOrder_mapsAndPersistsOrder() {
-    OrderRequestDto request = new OrderRequestDto(List.of());
-    UUID userId = UUID.randomUUID();
-    Order mappedOrder = baseOrder(userId);
-    Order savedOrder = mappedOrder.toBuilder().id(UUID.randomUUID()).build();
-    OrderResponse expectedResponse = OrderResponse.builder().orderId(savedOrder.getId()).build();
+  void whenCreateOrderCalled_thenReturnCreatedOrderResponse() {
+    OrderRequestDto request = Instancio.of(OrderRequestDto.class).create();
+    Order mappedOrder = buildOrder();
+    Order savedOrder = buildOrder();
+    OrderResponse orderResponse = buildOrderResponse();
 
-    when(orderMapper.toNewOrder(request, userId)).thenReturn(mappedOrder);
+    when(orderMapper.toNewOrder(request, USER_ID)).thenReturn(mappedOrder);
     when(orderRepository.save(mappedOrder)).thenReturn(savedOrder);
-    when(orderMapper.toOrderResponse(savedOrder)).thenReturn(expectedResponse);
+    when(orderMapper.toOrderResponse(savedOrder)).thenReturn(orderResponse);
 
-    OrderResponse response = orderService.createOrder(request, userId);
+    OrderResponse response = orderService.createOrder(request, USER_ID);
 
-    assertSame(expectedResponse, response);
-    verify(orderMapper).toNewOrder(request, userId);
+    assertThat(response).isEqualTo(orderResponse);
+    verify(orderMapper).toNewOrder(request, USER_ID);
     verify(orderRepository).save(mappedOrder);
     verify(orderMapper).toOrderResponse(savedOrder);
   }
 
   @Test
-  void getOrderById_returnsMappedResponseWhenOrderExists() {
-    Order order = baseOrder(UUID.randomUUID());
-    UUID orderId = order.getId();
+  void whenGetOrderByIdCalled_thenReturnMappedOrder() {
+    Order order = buildOrder();
+    OrderResponse orderResponse = buildOrderResponse();
 
-    OrderResponse expectedResponse = OrderResponse.builder().orderId(orderId).build();
+    when(orderRepository.findById(ORDER_ID)).thenReturn(Optional.of(order));
+    when(orderMapper.toOrderResponse(order)).thenReturn(orderResponse);
 
-    when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
-    when(orderMapper.toOrderResponse(order)).thenReturn(expectedResponse);
+    OrderResponse response = orderService.getOrderById(ORDER_ID, USER_ID);
 
-    OrderResponse response = orderService.getOrderById(orderId);
-
-    assertSame(expectedResponse, response);
-    verify(orderRepository).findById(orderId);
+    assertThat(response).isEqualTo(orderResponse);
+    verify(orderRepository).findById(ORDER_ID);
     verify(orderMapper).toOrderResponse(order);
   }
 
   @Test
-  void getOrderById_throwsWhenOrderDoesNotExist() {
-    UUID orderId = UUID.randomUUID();
-    when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+  void whenGetOrderByIdCalledAndOrderDoesNotExist_thenThrowOrderNotFoundException() {
+    when(orderRepository.findById(ORDER_ID)).thenReturn(Optional.empty());
 
-    OrderNotFoundException exception =
-        assertThrows(OrderNotFoundException.class, () -> orderService.getOrderById(orderId));
-
-    assertEquals(
-        String.format("Order could not be found with id %s", orderId), exception.getMessage());
-    verify(orderMapper, never()).toOrderResponse(any());
+    assertThatThrownBy(() -> orderService.getOrderById(ORDER_ID, USER_ID))
+        .isInstanceOf(OrderNotFoundException.class)
+        .hasMessageContaining(ORDER_ID.toString());
   }
 
   @Test
-  void getOrdersForUser_mapsEveryOrderFromRepository() {
-    UUID userId = UUID.randomUUID();
-    Order firstOrder = baseOrder(userId);
-    Order secondOrder = baseOrder(userId);
-    OrderResponse firstResponse = OrderResponse.builder().orderId(firstOrder.getId()).build();
-    OrderResponse secondResponse = OrderResponse.builder().orderId(secondOrder.getId()).build();
+  void whenGetOrderByIdCalledAndOrderBelongsToDifferentUser_thenThrowAccessDeniedException() {
+    Order order = buildOrder().toBuilder().userId(randomUUID()).build();
+    when(orderRepository.findById(ORDER_ID)).thenReturn(Optional.of(order));
 
-    when(orderRepository.findAllByUserId(userId)).thenReturn(List.of(firstOrder, secondOrder));
-    when(orderMapper.toOrderResponse(firstOrder)).thenReturn(firstResponse);
-    when(orderMapper.toOrderResponse(secondOrder)).thenReturn(secondResponse);
-
-    List<OrderResponse> responses = orderService.getOrdersForUser(userId);
-
-    assertEquals(List.of(firstResponse, secondResponse), responses);
-    verify(orderRepository).findAllByUserId(userId);
-    verify(orderMapper).toOrderResponse(firstOrder);
-    verify(orderMapper).toOrderResponse(secondOrder);
+    assertThatThrownBy(() -> orderService.getOrderById(ORDER_ID, USER_ID))
+        .isInstanceOf(AccessDeniedException.class)
+        .hasMessageContaining("authenticated user");
   }
 
   @Test
-  void updateOrderStatus_persistsOrderWithNewStatusAndUpdatedTimestamp() {
-    Order existingOrder = baseOrder(UUID.randomUUID());
-    UUID orderId = existingOrder.getId();
-    Instant originalUpdatedAt = existingOrder.getUpdatedAt();
+  void whenGetOrdersForUserCalled_thenReturnMappedOrders() {
+    Order orderOne = buildOrder();
+    Order orderTwo = buildOrder().toBuilder().id(randomUUID()).build();
+    OrderResponse orderResponseOne = buildOrderResponse();
+    OrderResponse orderResponseTwo =
+        buildOrderResponse().toBuilder().orderId(orderTwo.getId()).build();
 
-    OrderUpdateRequest updateRequest = OrderUpdateRequest.builder().newStatus(CANCELLED).build();
+    when(orderRepository.findAllByUserId(USER_ID)).thenReturn(List.of(orderOne, orderTwo));
+    when(orderMapper.toOrderResponse(orderOne)).thenReturn(orderResponseOne);
+    when(orderMapper.toOrderResponse(orderTwo)).thenReturn(orderResponseTwo);
 
-    when(orderRepository.findById(orderId)).thenReturn(Optional.of(existingOrder));
+    List<OrderResponse> response = orderService.getOrdersForUser(USER_ID);
 
-    orderService.updateOrderStatus(orderId, updateRequest);
-
-    ArgumentCaptor<Order> savedOrderCaptor = ArgumentCaptor.forClass(Order.class);
-    verify(orderRepository).save(savedOrderCaptor.capture());
-
-    Order savedOrder = savedOrderCaptor.getValue();
-    assertEquals(orderId, savedOrder.getId());
-    assertEquals(CANCELLED, savedOrder.getStatus());
-    assertEquals(existingOrder.getCreatedAt(), savedOrder.getCreatedAt());
-    assertNotNull(savedOrder.getUpdatedAt());
-    assertTrue(savedOrder.getUpdatedAt().isAfter(originalUpdatedAt));
+    assertThat(response).containsExactly(orderResponseOne, orderResponseTwo);
+    verify(orderRepository).findAllByUserId(USER_ID);
   }
 
   @Test
-  void updateOrderStatus_throwsWhenOrderDoesNotExist() {
-    UUID orderId = UUID.randomUUID();
-    OrderUpdateRequest updateRequest = OrderUpdateRequest.builder().newStatus(CANCELLED).build();
+  void whenGetOrdersForUserCalledAndNoOrdersExist_thenReturnEmptyList() {
+    when(orderRepository.findAllByUserId(USER_ID)).thenReturn(List.of());
 
-    when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+    List<OrderResponse> response = orderService.getOrdersForUser(USER_ID);
 
-    assertThrows(
-        OrderNotFoundException.class, () -> orderService.updateOrderStatus(orderId, updateRequest));
-    verify(orderRepository, never()).save(any());
+    assertThat(response).isEmpty();
   }
 
-  private static Order baseOrder(UUID userId) {
-    return Instancio.of(Order.class)
-        .set(field(Order::getUserId), userId)
-        .set(field(Order::getStatus), CREATED)
-        .set(field(Order::getCreatedAt), now())
-        .set(field(Order::getUpdatedAt), now())
-        .create();
+  @Test
+  void whenUpdateOrderStatusCalled_thenSaveOrderWithNewStatusAndUpdatedTimestamp() {
+    Instant originalUpdatedAt = Instant.parse("2025-01-01T10:00:00Z");
+    Order existingOrder =
+        buildOrder().toBuilder().status(CREATED).updatedAt(originalUpdatedAt).build();
+    OrderUpdateRequest request = OrderUpdateRequest.builder().newStatus(PAID).build();
+
+    when(orderRepository.findById(ORDER_ID)).thenReturn(Optional.of(existingOrder));
+
+    orderService.updateOrderStatus(ORDER_ID, request);
+
+    ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+    verify(orderRepository).save(orderCaptor.capture());
+    assertThat(orderCaptor.getValue().getId()).isEqualTo(ORDER_ID);
+    assertThat(orderCaptor.getValue().getStatus()).isEqualTo(PAID);
+    assertThat(orderCaptor.getValue().getUpdatedAt()).isAfter(originalUpdatedAt);
+    assertThat(orderCaptor.getValue().getCreatedAt()).isEqualTo(existingOrder.getCreatedAt());
+  }
+
+  @Test
+  void whenUpdateOrderStatusCalledAndOrderDoesNotExist_thenThrowOrderNotFoundException() {
+    OrderUpdateRequest request = OrderUpdateRequest.builder().newStatus(PAID).build();
+    when(orderRepository.findById(ORDER_ID)).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> orderService.updateOrderStatus(ORDER_ID, request))
+        .isInstanceOf(OrderNotFoundException.class)
+        .hasMessageContaining(ORDER_ID.toString());
+
+    verify(orderRepository, never()).save(org.mockito.ArgumentMatchers.isA(Order.class));
+  }
+
+  private Order buildOrder() {
+    return Order.builder()
+        .id(ORDER_ID)
+        .userId(USER_ID)
+        .status(CREATED)
+        .totalAmount(BigDecimal.valueOf(25.50))
+        .items(List.of())
+        .createdAt(Instant.parse("2025-01-01T09:00:00Z"))
+        .updatedAt(Instant.parse("2025-01-01T10:00:00Z"))
+        .build();
+  }
+
+  private OrderResponse buildOrderResponse() {
+    return OrderResponse.builder()
+        .orderId(ORDER_ID)
+        .userId(USER_ID)
+        .orderStatus(CREATED)
+        .totalPrice(BigDecimal.valueOf(25.50))
+        .items(List.of())
+        .createdAt(Instant.parse("2025-01-01T09:00:00Z"))
+        .build();
   }
 }

@@ -1,5 +1,6 @@
 package orderservice.models.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,5 +12,5 @@ import orderservice.enums.OrderStatus;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class OrderUpdateRequest {
-  private OrderStatus newStatus;
+  @NotNull private OrderStatus newStatus;
 }

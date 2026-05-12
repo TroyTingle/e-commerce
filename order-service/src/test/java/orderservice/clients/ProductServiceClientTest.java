@@ -2,21 +2,16 @@ package orderservice.clients;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.instancio.Select.field;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ecommerce.product.v1.ProductRequest;
 import ecommerce.product.v1.ProductResponse;
 import ecommerce.product.v1.ProductServiceGrpc;
-import java.math.BigDecimal;
 import java.util.UUID;
-import org.instancio.Instancio;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.ttingle.commonlib.dto.ProductDto;
@@ -29,36 +24,34 @@ class ProductServiceClientTest {
 
   @Mock private ProductServiceGrpc.ProductServiceBlockingStub productServiceStub;
 
-  @InjectMocks private ProductServiceClient productServiceClient;
-
   @Test
-  void whenGetProductByUuidCalled_thenMappedProductDtoReturned() {
-    ProductDto expectedProduct =
-        Instancio.of(ProductDto.class)
-            .set(field(ProductDto::getId), PRODUCT_ID)
-            .set(field(ProductDto::getPrice), new BigDecimal("12.34"))
-            .create();
-    ProductResponse grpcResponse =
+  void whenGetProductByUuidCalled_thenReturnMappedProductDto() {
+    ProductResponse productResponse =
         ProductResponse.newBuilder()
-            .setId(expectedProduct.getId().toString())
-            .setName(expectedProduct.getName())
-            .setDescription(expectedProduct.getDescription())
-            .setPrice(expectedProduct.getPrice().movePointRight(2).longValueExact())
-            .setCurrency(expectedProduct.getCurrency())
-            .setSku(expectedProduct.getSku())
-            .setCategory(expectedProduct.getCategory())
+            .setId(PRODUCT_ID.toString())
+            .setName("Keyboard")
+            .setDescription("Mechanical Keyboard")
+            .setPrice(12345)
+            .setCurrency("GBP")
+            .setSku("KEYBOARD-001")
+            .setCategory("Accessories")
             .build();
+    ProductServiceClient productServiceClient = new ProductServiceClient(productServiceStub);
 
     when(productServiceStub.getProductByUuid(
-            ProductRequest.newBuilder().setProductId(PRODUCT_ID.toString()).build()))
-        .thenReturn(grpcResponse);
+            argThat(request -> request.getProductId().equals(PRODUCT_ID.toString()))))
+        .thenReturn(productResponse);
 
     ProductDto response = productServiceClient.getProductByUuid(PRODUCT_ID);
 
-    ArgumentCaptor<ProductRequest> requestCaptor = ArgumentCaptor.forClass(ProductRequest.class);
-    verify(productServiceStub).getProductByUuid(requestCaptor.capture());
-
-    assertThat(requestCaptor.getValue().getProductId()).isEqualTo(PRODUCT_ID.toString());
-    assertThat(response).usingRecursiveComparison().isEqualTo(expectedProduct);
+    assertThat(response.getId()).isEqualTo(PRODUCT_ID);
+    assertThat(response.getName()).isEqualTo("Keyboard");
+    assertThat(response.getDescription()).isEqualTo("Mechanical Keyboard");
+    assertThat(response.getPrice()).isEqualByComparingTo("123.45");
+    assertThat(response.getCurrency()).isEqualTo("GBP");
+    assertThat(response.getSku()).isEqualTo("KEYBOARD-001");
+    assertThat(response.getCategory()).isEqualTo("Accessories");
+    verify(productServiceStub)
+        .getProductByUuid(argThat(request -> request.getProductId().equals(PRODUCT_ID.toString())));
   }
 }
