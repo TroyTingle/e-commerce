@@ -32,6 +32,7 @@ class CreateProductIntegrationTest extends BaseIntegrationTest {
     ProductRequest request =
         Instancio.of(ProductRequest.class)
             .set(field(ProductRequest::getCategoryName), category.getName())
+            .set(field(ProductRequest::getCurrency), "GBP")
             .create();
 
     ResponseEntity<ProductDto> response =
@@ -65,7 +66,8 @@ class CreateProductIntegrationTest extends BaseIntegrationTest {
 
   @Test
   void createNewProduct_whenCategoryDoesNotExist_thenThrowNotFoundException() {
-    ProductRequest request = Instancio.of(ProductRequest.class).create();
+    ProductRequest request =
+        Instancio.of(ProductRequest.class).set(field(ProductRequest::getCurrency), "GBP").create();
 
     assertThatThrownBy(
             () ->

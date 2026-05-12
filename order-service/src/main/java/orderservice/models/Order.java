@@ -1,14 +1,14 @@
 package orderservice.models;
 
-import static jakarta.persistence.CascadeType.ALL;
-
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -43,6 +43,7 @@ public class Order {
 
   private Instant updatedAt;
 
-  @OneToMany(mappedBy = "order", cascade = ALL)
+  @ElementCollection
+  @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
   private List<OrderItem> items;
 }
