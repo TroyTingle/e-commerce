@@ -101,7 +101,6 @@ public abstract class BaseIntegrationTest {
             .productNameAtPurchase("Keyboard")
             .quantity(1)
             .priceAtPurchase(BigDecimal.valueOf(19.99))
-            .order(order)
             .build();
     order.setItems(List.of(item));
     return order;

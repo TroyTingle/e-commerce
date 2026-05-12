@@ -89,7 +89,6 @@ class OrderMapperTest {
     assertThat(result.getCreatedAt()).isBetween(before, after);
     assertThat(result.getUpdatedAt()).isBetween(before, after);
     assertThat(result.getItems()).hasSize(2);
-    assertThat(result.getItems()).allSatisfy(item -> assertThat(item.getOrder()).isSameAs(result));
     assertThat(result.getItems().getFirst().getProductId()).isEqualTo(KEYBOARD_ID);
     assertThat(result.getItems().getFirst().getProductNameAtPurchase()).isEqualTo("Keyboard");
     assertThat(result.getItems().getFirst().getPriceAtPurchase()).isEqualByComparingTo("10.99");

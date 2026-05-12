@@ -58,11 +58,6 @@ class CreateOrderIntegrationTest extends BaseIntegrationTest {
     assertThat(response.getBody().getItems())
         .extracting("productName", "quantity")
         .containsExactlyInAnyOrder(tuple("Keyboard", 2), tuple("Mouse", 3));
-
-    Order persistedOrder = orderRepository.findById(response.getBody().getOrderId()).orElseThrow();
-    assertThat(persistedOrder.getItems())
-        .hasSize(2)
-        .allSatisfy(item -> assertThat(item.getOrder().getId()).isEqualTo(persistedOrder.getId()));
   }
 
   @Test

@@ -44,18 +44,15 @@ public class OrderMapper {
 
   public Order toNewOrder(OrderRequestDto orderRequestDto, UUID userId) {
     List<OrderItem> items = toOrderItems(orderRequestDto.getItems());
-    Order order =
-        Order.builder()
-            .userId(userId)
-            .status(CREATED)
-            .totalAmount(calculateTotalPrice(items))
-            .items(items)
-            .createdAt(now())
-            .updatedAt(now())
-            .build();
 
-    items.forEach(item -> item.setOrder(order));
-    return order;
+    return Order.builder()
+        .userId(userId)
+        .status(CREATED)
+        .totalAmount(calculateTotalPrice(items))
+        .items(items)
+        .createdAt(now())
+        .updatedAt(now())
+        .build();
   }
 
   private BigDecimal calculateTotalPrice(List<OrderItem> items) {
