@@ -12,6 +12,7 @@ import orderservice.models.dto.OrderRequestDto;
 import orderservice.models.dto.OrderResponse;
 import orderservice.models.dto.OrderUpdateRequest;
 import orderservice.repositories.OrderRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,8 +27,13 @@ public class OrderService {
     return orderMapper.toOrderResponse(orderRepository.save(order));
   }
 
-  public OrderResponse getOrderById(UUID orderId) {
-    return orderMapper.toOrderResponse(findOrderByIdOrThrow(orderId));
+  public OrderResponse getOrderById(UUID orderId, UUID userId) {
+    Order order = findOrderByIdOrThrow(orderId);
+    if (!order.getUserId().equals(userId)) {
+      throw new AccessDeniedException("Order does not belong to the authenticated user");
+    }
+
+    return orderMapper.toOrderResponse(order);
   }
 
   public List<OrderResponse> getOrdersForUser(UUID userId) {

@@ -44,14 +44,18 @@ public class OrderMapper {
 
   public Order toNewOrder(OrderRequestDto orderRequestDto, UUID userId) {
     List<OrderItem> items = toOrderItems(orderRequestDto.getItems());
-    return Order.builder()
-        .userId(userId)
-        .status(CREATED)
-        .totalAmount(calculateTotalPrice(items))
-        .items(items)
-        .createdAt(now())
-        .updatedAt(now())
-        .build();
+    Order order =
+        Order.builder()
+            .userId(userId)
+            .status(CREATED)
+            .totalAmount(calculateTotalPrice(items))
+            .items(items)
+            .createdAt(now())
+            .updatedAt(now())
+            .build();
+
+    items.forEach(item -> item.setOrder(order));
+    return order;
   }
 
   private BigDecimal calculateTotalPrice(List<OrderItem> items) {
@@ -60,21 +64,23 @@ public class OrderMapper {
     }
 
     return items.stream()
-        .map(item -> item.getPriceAtPurchase()
-            .multiply(BigDecimal.valueOf(item.getQuantity())))
+        .map(item -> item.getPriceAtPurchase().multiply(BigDecimal.valueOf(item.getQuantity())))
         .reduce(ZERO, BigDecimal::add);
   }
 
   private List<OrderItem> toOrderItems(List<OrderItemRequest> items) {
-    return items.stream().map(item -> {
-      ProductDto product = productServiceClient.getProductByUuid(item.getProductId());
+    return items.stream()
+        .map(
+            item -> {
+              ProductDto product = productServiceClient.getProductByUuid(item.getProductId());
 
-      return OrderItem.builder()
-          .productId(item.getProductId())
-          .productNameAtPurchase(product.getName())
-          .quantity(item.getQuantity())
-          .priceAtPurchase(product.getPrice())
-          .build();
-    }).toList();
+              return OrderItem.builder()
+                  .productId(item.getProductId())
+                  .productNameAtPurchase(product.getName())
+                  .quantity(item.getQuantity())
+                  .priceAtPurchase(product.getPrice())
+                  .build();
+            })
+        .toList();
   }
 }
