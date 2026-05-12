@@ -6,8 +6,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import uk.co.ttingle.userservice.repositories.UserRepository;
 import uk.co.ttingle.commonlib.security.JwtTokenUtil;
+import uk.co.ttingle.userservice.repositories.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class UserAuthServiceTest {

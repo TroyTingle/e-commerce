@@ -66,7 +66,9 @@ public class UserAuthService {
                     new UsernameNotFoundException(
                         "User not found with email: " + loginRequest.getEmail()));
 
-    String token = jwtUtil.generateUserToken(user.getId(), user.getEmail(), List.of(user.getRole().name()));
+    String token =
+        jwtUtil.generateUserToken(user.getId(), user.getEmail(), List.of(user.getRole().name()));
+
     return AuthResponse.builder().token(token).type(BEARER).build();
   }
 }
