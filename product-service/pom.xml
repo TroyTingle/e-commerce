@@ -13,47 +13,52 @@
   <name>product-service</name>
 
   <dependencies>
-    <!-- Spring gRPC -->
-    <dependency>
-      <groupId>org.springframework.grpc</groupId>
-      <artifactId>spring-grpc-spring-boot-starter</artifactId>
-      <version>${spring.grpc.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-services</artifactId>
-      <version>${grpc.version}</version>
-    </dependency>
-
-    <!-- Spring Boot Web -->
+    <!-- region Spring Boot -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
+      <artifactId>spring-boot-starter-webmvc</artifactId>
     </dependency>
 
-    <!-- JPA -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
 
-    <!-- Actuator -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.grpc</groupId>
+      <artifactId>spring-grpc-client-spring-boot-starter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.grpc</groupId>
+      <artifactId>spring-grpc-server-web-spring-boot-starter</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
-    <!-- Validation -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
 
-    <!-- Metrics (Prometheus) -->
     <dependency>
-      <groupId>io.micrometer</groupId>
-      <artifactId>micrometer-registry-prometheus</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-opentelemetry</artifactId>
+    </dependency>
+    <!-- end region Spring Boot -->
+
+    <!-- gRPC -->
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-services</artifactId>
     </dependency>
 
     <!-- PostgreSQL -->
@@ -76,12 +81,43 @@
       <optional>true</optional>
     </dependency>
 
-    <!-- Testing -->
+    <!-- Region Spring Test -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
+      <artifactId>spring-boot-starter-actuator-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-opentelemetry-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webmvc-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- End Region Spring Test -->
 
     <!-- Instancio -->
     <dependency>
@@ -90,13 +126,7 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Test Containers -->
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers</artifactId>
-      <scope>test</scope>
-    </dependency>
-
+    <!-- Region Test Containers -->
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
@@ -108,7 +138,7 @@
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <!-- End region Test containers -->
   </dependencies>
 
   <build>
@@ -149,7 +179,7 @@
       </plugin>
 
       <plugin>
-        <groupId>org.xolstice.maven.plugins</groupId>
+        <groupId>io.github.ascopes</groupId>
         <artifactId>protobuf-maven-plugin</artifactId>
       </plugin>
     </plugins>

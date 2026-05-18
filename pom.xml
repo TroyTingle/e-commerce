@@ -18,24 +18,22 @@
     </modules>
     <properties>
       <java.version>25</java.version>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-      <grpc.version>1.81.0</grpc.version>
+      <spring.boot.version>4.0.6</spring.boot.version>
+      <spring.cloud.version>2025.1.1</spring.cloud.version>
+      <spring.grpc.version>1.0.3</spring.grpc.version>
+
+      <grpc.java.version>1.81.0</grpc.java.version>
       <instancio.version>5.5.1</instancio.version>
       <lombok.version>1.18.42</lombok.version>
-      <protobuf.plugin.version>0.6.1</protobuf.plugin.version>
-      <protobuf.version>3.25.3</protobuf.version>
-      <spring.boot.version>3.5.10</spring.boot.version>
-      <spring.cloud.version>2025.0.0</spring.cloud.version>
-      <spring.grpc.version>1.0.2</spring.grpc.version>
-      <test.containers.version>2.0.3</test.containers.version>
+      <test.containers-junit.version>1.21.4</test.containers-junit.version>
+      <test.containers-postgres.version>1.21.4</test.containers-postgres.version>
+      <protobuf-java.version>4.33.4</protobuf-java.version>
 
-      <plugin.checkstyle.version>3.3.0</plugin.checkstyle.version>
       <plugin.jacoco.version>0.8.14</plugin.jacoco.version>
       <plugin.maven.compiler.version>3.11.0</plugin.maven.compiler.version>
-      <plugin.maven.failsafe.version>3.2.2</plugin.maven.failsafe.version>
       <plugin.maven.surefire.version>3.2.2</plugin.maven.surefire.version>
-      <plugin.os.maven.plugin>1.7.1</plugin.os.maven.plugin>
+      <plugin.protobuf.maven>4.0.3</plugin.protobuf.maven>
       <plugin.spotless.version>3.2.1</plugin.spotless.version>
 
       <testTags>!integration</testTags>
@@ -59,6 +57,14 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- Spring gRPC BOM -->
+      <dependency>
+        <groupId>org.springframework.grpc</groupId>
+        <artifactId>spring-grpc-dependencies</artifactId>
+        <version>${spring.grpc.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
 
       <!-- Lombok -->
       <dependency>
@@ -76,34 +82,26 @@
 
       <dependency>
         <groupId>org.testcontainers</groupId>
-        <artifactId>testcontainers</artifactId>
-        <version>${test.containers.version}</version>
+        <artifactId>postgresql</artifactId>
+        <version>${test.containers-postgres.version}</version>
       </dependency>
 
-      <!-- Spring gRPC -->
       <dependency>
-        <groupId>org.springframework.grpc</groupId>
-        <artifactId>spring-grpc-spring-boot-starter</artifactId>
-        <version>${spring.grpc.version}</version>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${test.containers-junit.version}</version>
       </dependency>
 
+      <!-- gRPC -->
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-services</artifactId>
-        <version>${grpc.version}</version>
+        <version>${grpc.java.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <build>
-    <extensions>
-      <extension>
-        <groupId>kr.motd.maven</groupId>
-        <artifactId>os-maven-plugin</artifactId>
-        <version>${plugin.os.maven.plugin}</version>
-      </extension>
-    </extensions>
-
     <pluginManagement>
       <plugins>
         <plugin>
@@ -224,25 +222,27 @@
         </plugin>
 
         <plugin>
-          <groupId>org.xolstice.maven.plugins</groupId>
+          <groupId>io.github.ascopes</groupId>
           <artifactId>protobuf-maven-plugin</artifactId>
-          <version>${protobuf.plugin.version}</version>
+          <version>${plugin.protobuf.maven}</version>
           <configuration>
-            <protocArtifact>
-              com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
-            </protocArtifact>
-            <pluginId>grpc-java</pluginId>
-            <pluginArtifact>
-              io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
-            </pluginArtifact>
-            <protoSourceRoot>${project.basedir}/../specs/proto</protoSourceRoot>
+            <protoc>${protobuf-java.version}</protoc>
+            <sourceDirectories>
+              <sourceDirectory>${maven.multiModuleProjectDirectory}/specs/proto</sourceDirectory>
+            </sourceDirectories>
+            <binaryMavenPlugins>
+              <binaryMavenPlugin>
+                <groupId>io.grpc</groupId>
+                <artifactId>protoc-gen-grpc-java</artifactId>
+                <version>${grpc.java.version}</version>
+              </binaryMavenPlugin>
+            </binaryMavenPlugins>
           </configuration>
           <executions>
             <execution>
-              <phase>generate-sources</phase>
+              <id>generate</id>
               <goals>
-                <goal>compile</goal>
-                <goal>compile-custom</goal>
+                <goal>generate</goal>
               </goals>
             </execution>
           </executions>
