@@ -1,0 +1,62 @@
+package uk.co.ttingle.orderservice.services;
+
+import static java.time.Instant.now;
+
+import java.util.List;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import uk.co.ttingle.orderservice.exceptions.OrderNotFoundException;
+import uk.co.ttingle.orderservice.mappers.OrderMapper;
+import uk.co.ttingle.orderservice.models.Order;
+import uk.co.ttingle.orderservice.models.dto.OrderRequestDto;
+import uk.co.ttingle.orderservice.models.dto.OrderResponse;
+import uk.co.ttingle.orderservice.models.dto.OrderUpdateRequest;
+import uk.co.ttingle.orderservice.repositories.OrderRepository;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+
+  private final OrderRepository orderRepository;
+  private final OrderMapper orderMapper;
+
+  public OrderResponse createOrder(OrderRequestDto orderRequest, UUID userId) {
+    Order order = orderMapper.toNewOrder(orderRequest, userId);
+    return orderMapper.toOrderResponse(orderRepository.save(order));
+  }
+
+  public OrderResponse getOrderById(UUID orderId, UUID userId) {
+    Order order = findOrderByIdOrThrow(orderId);
+    if (!order.getUserId().equals(userId)) {
+      throw new AccessDeniedException("Order does not belong to the authenticated user");
+    }
+
+    return orderMapper.toOrderResponse(order);
+  }
+
+  public List<OrderResponse> getOrdersForUser(UUID userId) {
+    return orderRepository.findAllByUserId(userId).stream()
+        .map(orderMapper::toOrderResponse)
+        .toList();
+  }
+
+  public void updateOrderStatus(UUID orderId, OrderUpdateRequest orderUpdate) {
+    Order order = findOrderByIdOrThrow(orderId);
+
+    Order updatedOrder =
+        order.toBuilder().status(orderUpdate.getNewStatus()).updatedAt(now()).build();
+
+    orderRepository.save(updatedOrder);
+  }
+
+  private Order findOrderByIdOrThrow(UUID orderId) {
+    return orderRepository
+        .findById(orderId)
+        .orElseThrow(
+            () ->
+                new OrderNotFoundException(
+                    String.format("Order could not be found with id %s", orderId)));
+  }
+}
