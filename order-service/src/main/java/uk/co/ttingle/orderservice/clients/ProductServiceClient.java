@@ -2,14 +2,14 @@ package uk.co.ttingle.orderservice.clients;
 
 import static java.util.UUID.fromString;
 
-import ecommerce.product.v1.ProductRequest;
-import ecommerce.product.v1.ProductResponse;
-import ecommerce.product.v1.ProductServiceGrpc;
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.co.ttingle.commonlib.dto.ProductDto;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductRequest;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductResponse;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductServiceGrpc;
 
 @Component
 @RequiredArgsConstructor

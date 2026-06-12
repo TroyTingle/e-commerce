@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
 import uk.co.ttingle.orderservice.models.Order;
-import uk.co.ttingle.orderservice.models.dto.OrderResponse;
 
 @Tag("integration")
 class GetOrdersForUserIntegrationTest extends BaseIntegrationTest {

@@ -3,7 +3,7 @@ syntax = "proto3";
 package ecommerce.product.v1;
 
 option java_multiple_files = true;
-option java_package = "ecommerce.product.v1";
+option java_package = "uk.co.ttingle.productservice.generated.grpc.v1";
 
 service ProductService {
   rpc GetProductByUuid(ProductRequest) returns (ProductResponse);

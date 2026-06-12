@@ -1,11 +1,11 @@
 package uk.co.ttingle.orderservice.config;
 
-import ecommerce.product.v1.ProductServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductServiceGrpc;
 
 @Configuration
 public class GrpcClientConfig {

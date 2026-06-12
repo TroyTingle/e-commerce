@@ -1,5 +1,6 @@
 package uk.co.ttingle.orderservice.mappers;
 
+import static java.time.OffsetDateTime.parse;
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.never;
@@ -61,7 +62,7 @@ class OrderMapperTest {
     assertThat(result.getUserId()).isEqualTo(USER_ID);
     assertThat(result.getOrderStatus()).isEqualTo(CREATED);
     assertThat(result.getTotalPrice()).isEqualByComparingTo("21.98");
-    assertThat(result.getCreatedAt()).isEqualTo(Instant.parse("2025-01-01T10:00:00Z"));
+    assertThat(result.getCreatedAt()).isEqualTo(parse("2025-01-01T10:00:00Z"));
     assertThat(result.getItems()).hasSize(1);
     assertThat(result.getItems().getFirst().getProductName()).isEqualTo("Keyboard");
     assertThat(result.getItems().getFirst().getQuantity()).isEqualTo(2);

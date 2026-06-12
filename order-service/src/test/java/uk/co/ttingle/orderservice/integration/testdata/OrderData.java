@@ -3,18 +3,18 @@ package uk.co.ttingle.orderservice.integration.testdata;
 import static java.time.Instant.now;
 import static org.instancio.Select.field;
 
-import ecommerce.product.v1.ProductRequest;
-import ecommerce.product.v1.ProductResponse;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.instancio.Instancio;
+import org.springframework.boot.test.context.TestComponent;
 import uk.co.ttingle.orderservice.enums.OrderStatus;
 import uk.co.ttingle.orderservice.models.Order;
 import uk.co.ttingle.orderservice.models.OrderItem;
 import uk.co.ttingle.orderservice.repositories.OrderRepository;
-import org.instancio.Instancio;
-import org.springframework.boot.test.context.TestComponent;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductRequest;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductResponse;
 
 @TestComponent
 @RequiredArgsConstructor

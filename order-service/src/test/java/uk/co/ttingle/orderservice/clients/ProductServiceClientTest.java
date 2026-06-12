@@ -6,8 +6,6 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ecommerce.product.v1.ProductResponse;
-import ecommerce.product.v1.ProductServiceGrpc;
 import java.util.UUID;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -15,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.ttingle.commonlib.dto.ProductDto;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductResponse;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductServiceGrpc;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

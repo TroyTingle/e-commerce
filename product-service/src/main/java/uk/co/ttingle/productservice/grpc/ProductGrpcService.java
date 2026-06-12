@@ -1,8 +1,5 @@
 package uk.co.ttingle.productservice.grpc;
 
-import ecommerce.product.v1.ProductRequest;
-import ecommerce.product.v1.ProductResponse;
-import ecommerce.product.v1.ProductServiceGrpc;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import java.math.BigDecimal;
@@ -11,6 +8,9 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.grpc.server.service.GrpcService;
 import uk.co.ttingle.productservice.exceptions.ProductNotFoundException;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductRequest;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductResponse;
+import uk.co.ttingle.productservice.generated.grpc.v1.ProductServiceGrpc;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
 import uk.co.ttingle.productservice.services.ProductService;
 
