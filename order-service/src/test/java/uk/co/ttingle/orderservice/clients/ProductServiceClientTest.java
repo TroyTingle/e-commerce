@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.co.ttingle.commonlib.dto.ProductDto;
 import uk.co.ttingle.productservice.generated.grpc.v1.ProductResponse;
 import uk.co.ttingle.productservice.generated.grpc.v1.ProductServiceGrpc;
+import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

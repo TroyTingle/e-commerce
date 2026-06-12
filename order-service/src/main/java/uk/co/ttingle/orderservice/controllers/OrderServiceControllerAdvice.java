@@ -14,8 +14,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import uk.co.ttingle.commonlib.dto.ExceptionDto;
 import uk.co.ttingle.orderservice.exceptions.OrderNotFoundException;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.ExceptionDto;
 
 @Slf4j
 @RestControllerAdvice

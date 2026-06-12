@@ -17,7 +17,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.client.RestClient;
 import org.testcontainers.containers.PostgreSQLContainer;
-import uk.co.ttingle.commonlib.dto.ProductDto;
 import uk.co.ttingle.commonlib.security.JwtConstants;
 import uk.co.ttingle.commonlib.security.JwtTokenUtil;
 import uk.co.ttingle.orderservice.clients.ProductServiceClient;
@@ -25,6 +24,7 @@ import uk.co.ttingle.orderservice.enums.OrderStatus;
 import uk.co.ttingle.orderservice.models.Order;
 import uk.co.ttingle.orderservice.models.OrderItem;
 import uk.co.ttingle.orderservice.repositories.OrderRepository;
+import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)

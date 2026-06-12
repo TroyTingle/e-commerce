@@ -6,10 +6,10 @@ import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import uk.co.ttingle.commonlib.dto.ProductDto;
 import uk.co.ttingle.productservice.generated.grpc.v1.ProductRequest;
 import uk.co.ttingle.productservice.generated.grpc.v1.ProductResponse;
 import uk.co.ttingle.productservice.generated.grpc.v1.ProductServiceGrpc;
+import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
 
 @Component
 @RequiredArgsConstructor

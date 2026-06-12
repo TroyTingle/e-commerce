@@ -13,8 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import uk.co.ttingle.commonlib.dto.ExceptionDto;
 import uk.co.ttingle.orderservice.exceptions.OrderNotFoundException;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.ExceptionDto;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

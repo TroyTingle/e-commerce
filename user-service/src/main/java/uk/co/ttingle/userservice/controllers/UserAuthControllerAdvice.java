@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import uk.co.ttingle.commonlib.dto.ExceptionDto;
 import uk.co.ttingle.userservice.exceptions.EmailConflictException;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.ExceptionDto;
 
 @ControllerAdvice
 public class UserAuthControllerAdvice {

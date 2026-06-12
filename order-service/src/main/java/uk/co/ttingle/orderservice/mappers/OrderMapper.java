@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import uk.co.ttingle.commonlib.dto.ProductDto;
 import uk.co.ttingle.orderservice.clients.ProductServiceClient;
 import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderItemRequest;
 import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderItemResponse;
@@ -19,6 +18,7 @@ import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
 import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
 import uk.co.ttingle.orderservice.models.Order;
 import uk.co.ttingle.orderservice.models.OrderItem;
+import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
 
 @Component
 @RequiredArgsConstructor
