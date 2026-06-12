@@ -2,21 +2,23 @@ package uk.co.ttingle.orderservice.mappers;
 
 import static java.math.BigDecimal.ZERO;
 import static java.time.Instant.now;
+import static java.time.OffsetDateTime.ofInstant;
+import static java.time.ZoneOffset.UTC;
 import static uk.co.ttingle.orderservice.enums.OrderStatus.CREATED;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import uk.co.ttingle.commonlib.dto.ProductDto;
 import uk.co.ttingle.orderservice.clients.ProductServiceClient;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderItemRequest;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderItemResponse;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
 import uk.co.ttingle.orderservice.models.Order;
 import uk.co.ttingle.orderservice.models.OrderItem;
-import uk.co.ttingle.orderservice.models.dto.OrderItemRequest;
-import uk.co.ttingle.orderservice.models.dto.OrderItemResponse;
-import uk.co.ttingle.orderservice.models.dto.OrderRequestDto;
-import uk.co.ttingle.orderservice.models.dto.OrderResponse;
 import org.springframework.stereotype.Component;
-import uk.co.ttingle.commonlib.dto.ProductDto;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class OrderMapper {
         .orderStatus(order.getStatus())
         .totalPrice(order.getTotalAmount())
         .items(order.getItems().stream().map(this::toOrderItemResponse).toList())
-        .createdAt(order.getCreatedAt())
+        .createdAt(ofInstant(order.getCreatedAt(), UTC))
         .build();
   }
 

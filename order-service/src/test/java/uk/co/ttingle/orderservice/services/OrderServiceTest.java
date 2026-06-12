@@ -11,15 +11,16 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import uk.co.ttingle.orderservice.exceptions.OrderNotFoundException;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderUpdateRequest;
 import uk.co.ttingle.orderservice.mappers.OrderMapper;
 import uk.co.ttingle.orderservice.models.Order;
-import uk.co.ttingle.orderservice.models.dto.OrderRequestDto;
-import uk.co.ttingle.orderservice.models.dto.OrderResponse;
-import uk.co.ttingle.orderservice.models.dto.OrderUpdateRequest;
 import uk.co.ttingle.orderservice.repositories.OrderRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Tag;
@@ -172,7 +173,7 @@ class OrderServiceTest {
         .orderStatus(CREATED)
         .totalPrice(BigDecimal.valueOf(25.50))
         .items(List.of())
-        .createdAt(Instant.parse("2025-01-01T09:00:00Z"))
+        .createdAt(OffsetDateTime.parse("2025-01-01T09:00:00Z"))
         .build();
   }
 }

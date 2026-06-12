@@ -10,9 +10,10 @@ import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 import java.util.UUID;
-import uk.co.ttingle.orderservice.models.dto.OrderRequestDto;
-import uk.co.ttingle.orderservice.models.dto.OrderResponse;
-import uk.co.ttingle.orderservice.models.dto.OrderUpdateRequest;
+
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderUpdateRequest;
 import uk.co.ttingle.orderservice.services.OrderService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Tag;
@@ -77,7 +78,7 @@ class OrderControllerTest {
 
     doNothing().when(orderService).updateOrderStatus(ORDER_ID, request);
 
-    ResponseEntity<OrderResponse> response = orderController.updateOrderStatus(ORDER_ID, request);
+    ResponseEntity<Void> response = orderController.updateOrderStatus(ORDER_ID, request);
 
     assertThat(response.getStatusCode()).isEqualTo(NO_CONTENT);
     assertThat(response.getBody()).isNull();

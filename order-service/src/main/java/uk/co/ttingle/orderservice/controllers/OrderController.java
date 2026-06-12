@@ -7,9 +7,9 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import uk.co.ttingle.orderservice.models.dto.OrderRequestDto;
-import uk.co.ttingle.orderservice.models.dto.OrderResponse;
-import uk.co.ttingle.orderservice.models.dto.OrderUpdateRequest;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderUpdateRequest;
 import uk.co.ttingle.orderservice.services.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,9 +47,9 @@ public class OrderController {
     return ResponseEntity.ok(orderService.getOrdersForUser(userId));
   }
 
-  @PatchMapping("/{orderId}")
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<OrderResponse> updateOrderStatus(
+  @PatchMapping("/{orderId}")
+  public ResponseEntity<Void> updateOrderStatus(
       @PathVariable("orderId") UUID orderId, @RequestBody @Valid OrderUpdateRequest orderUpdate) {
     orderService.updateOrderStatus(orderId, orderUpdate);
     return ResponseEntity.status(NO_CONTENT).build();
