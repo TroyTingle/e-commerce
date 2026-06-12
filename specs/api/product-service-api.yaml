@@ -1,0 +1,382 @@
+
+openapi: 3.1.0
+info:
+  title: Product Service API
+  version: 1.0.0
+
+paths: 
+  /api/v1/products: 
+    get: 
+      tags:
+        - products
+      operationId: getAllProducts
+      summary: Search products
+      x-spring-paginated: true
+      parameters:
+        - $ref: '#/components/parameters/NameParam'
+        - $ref: '#/components/parameters/MinPriceParam'
+        - $ref: '#/components/parameters/MaxPriceParam'
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/IsActiveParam'
+      responses: 
+        200: 
+          description: Matching products
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/ProductPage'
+        400: 
+          $ref: '#/components/responses/ValidationError'
+        500: 
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/products/{productId}:
+    get: 
+      tags:
+        - products
+      operationId: getProductById
+      summary: Get a product by ID
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      responses: 
+        200: 
+          description: Product
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/ProductDto'
+        404: 
+          $ref: '#/components/responses/NotFound'
+        500: 
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/products/sku/{sku}:
+    get: 
+      tags:
+        - products
+      operationId: getProductBySku
+      summary: Get a product by SKU
+      parameters:
+        - $ref: '#/components/parameters/SkuParam'
+      responses: 
+        200: 
+          description: Product
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/ProductDto'
+        404: 
+          $ref: '#/components/responses/NotFound'
+        500: 
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/admin/products: 
+    post: 
+      tags:
+        - adminProducts
+      operationId: createProduct
+      summary: Create a product
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              $ref: '#/components/schemas/ProductRequest'
+      responses: 
+        201: 
+          description: Created product
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/ProductDto'
+        400: 
+          $ref: '#/components/responses/ValidationError'
+        
+        404: 
+          $ref: '#/components/responses/NotFound'
+        
+        409: 
+          $ref: '#/components/responses/Conflict'
+        
+        500: 
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/admin/products/{productId}:
+    put: 
+      tags:
+      - adminProducts
+      operationId: updateProduct
+      summary: Update a product
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              $ref: '#/components/schemas/ProductRequest'
+      responses: 
+        200: 
+          description: Updated product
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/ProductDto'
+        400: 
+          $ref: '#/components/responses/ValidationError'
+        404: 
+          $ref: '#/components/responses/NotFound'
+        409: 
+          $ref: '#/components/responses/Conflict'
+        500: 
+          $ref: '#/components/responses/ServerError'
+
+    delete: 
+      tags:
+        - adminProducts
+      operationId: deleteProduct
+      summary: Deactivate a product
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      responses: 
+        204: 
+          description: Product deactivated
+        404: 
+          $ref: '#/components/responses/NotFound'
+        500: 
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/admin/products/id/inventory: 
+    patch: 
+      tags:
+        - adminProducts
+      operationId: updateInventory
+      summary: Update product inventory
+      parameters:
+        - $ref: '#/components/parameters/ProductIdParam'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              $ref: '#/components/schemas/InventoryUpdateRequest'
+      responses: 
+        204: 
+          description: Inventory updated
+        400: 
+          $ref: '#/components/responses/ValidationError'
+        404: 
+          $ref: '#/components/responses/NotFound'
+        500: 
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/categories: 
+    get: 
+      tags:
+        - categories
+      operationId: getAllCategories
+      summary: List categories
+      responses: 
+        200: 
+          description: Categories
+          content: 
+            application/json: 
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/CategoryDto'
+        500: 
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/categories/name: 
+    get: 
+      tags:
+        - categories
+      operationId: getCategoryByName
+      summary: Get a category by name
+      parameters:
+        - $ref: '#/components/parameters/NameParam'
+      responses: 
+        200: 
+          description: Category
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/CategoryDto'
+        404: 
+          $ref: '#/components/responses/NotFound'
+        
+        500: 
+          $ref: '#/components/responses/ServerError'
+
+components:
+  parameters:
+    NameParam:
+      in: query
+      name: category
+      schema:
+        type: string
+
+    ProductIdParam:
+      in: path
+      name: productId
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    SkuParam:
+      in: path
+      name: sku
+      required: true
+      schema:
+        type: string
+
+    MinPriceParam:
+      in: query
+      name: minPrice
+      schema:
+        type: number
+
+    MaxPriceParam:
+      in: query
+      name: maxPrice
+      schema:
+        type: number
+
+    SearchParam:
+      in: query
+      name: search
+      schema:
+        type: string
+
+    IsActiveParam:
+      in: query
+      name: active
+      schema:
+        type: boolean
+        default: true
+
+  schemas: 
+    ProductDto: 
+      type: object
+      properties: 
+        id: 
+          type: string
+          format: uuid
+        name: 
+          type: string
+        description: 
+          type: string
+        price: 
+          type: number
+        currency: 
+          type: string
+        sku: 
+          type: string
+        category: 
+          type: string
+
+    ProductRequest: 
+      type: object
+      properties: 
+        name: 
+          type: string
+          minLength: 1
+        description: 
+          type: string
+          minLength: 1
+        price: 
+          type: number
+          exclusiveMinimum: 0
+        currency: 
+          type: string
+          minLength: 1
+        sku: 
+          type: string
+          minLength: 1
+        inventoryQuantity: 
+          type: integer
+          minimum: 0
+        categoryName: 
+          type: string
+          minLength: 1
+      required:
+        - name
+        - description
+        - price
+        - currency
+        - sku
+        - inventoryQuantity
+        - categoryName
+
+    InventoryUpdateRequest: 
+      type: object
+      properties: 
+        quantity: 
+          type: integer
+          minimum: 0
+
+    CategoryDto: 
+      type: object
+      properties: 
+        id: 
+          type: string
+          format: uuid
+        name: 
+          type: string
+        description: 
+          type: string
+
+    ProductPage: 
+      type: object
+      properties: 
+        content: 
+          type: array
+          items: 
+            $ref: '#/components/schemas/ProductDto'
+        totalElements: 
+          type: integer
+          format: int64
+        totalPages: 
+          type: integer
+          format: int32
+
+    ExceptionDto: 
+      type: object
+      properties: 
+        message: 
+          type: string
+        validationErrors: 
+          type: object
+          additionalProperties: 
+            type: string
+
+  responses: 
+    ValidationError: 
+      description: Validation error
+      content: 
+        application/json: 
+          schema: 
+            $ref: '#/components/schemas/ExceptionDto'
+
+    NotFound: 
+      description: Resource not found
+      content: 
+        application/json: 
+          schema: 
+            $ref: '#/components/schemas/ExceptionDto'
+
+    Conflict: 
+      description: Conflict
+      content: 
+        application/json: 
+          schema: 
+            $ref: '#/components/schemas/ExceptionDto'
+
+    ServerError: 
+      description: Unexpected error
+      content: 
+        application/json: 
+          schema: 
+            $ref: '#/components/schemas/ExceptionDto'

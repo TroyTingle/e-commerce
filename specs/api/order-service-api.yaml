@@ -1,0 +1,206 @@
+openapi: 3.1.0
+info:
+  title: Order Service API
+  version: 1.0.0
+paths:
+  /api/v1/orders:
+    post:
+      tags:
+      - Orders
+      operationId: createOrder
+      summary: Create an order for the authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/OrderRequestDto"
+      responses:
+        '201':
+          description: Created order
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/OrderResponse"
+        '400':
+          "$ref": "#/components/responses/ValidationError"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '500':
+          "$ref": "#/components/responses/ServerError"
+    get:
+      tags:
+      - Orders
+      operationId: getAllOrdersForUser
+      summary: List orders for the authenticated user
+      responses:
+        '200':
+          description: Orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/OrderResponse"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '500':
+          "$ref": "#/components/responses/ServerError"
+  /api/v1/orders/{orderId}:
+    get:
+      tags:
+      - Orders
+      operationId: getOrder
+      summary: Get an order by ID
+      parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Order
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/OrderResponse"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/NotFound"
+        '500':
+          "$ref": "#/components/responses/ServerError"
+    patch:
+      tags:
+      - Orders
+      operationId: updateOrderStatus
+      summary: Update an order status
+      parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/OrderUpdateRequest"
+      responses:
+        '204':
+          description: Order status updated
+        '400':
+          "$ref": "#/components/responses/ValidationError"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/NotFound"
+        '500':
+          "$ref": "#/components/responses/ServerError"
+
+components:
+  schemas:
+    OrderStatus:
+      type: string
+      enum:
+      - CREATED
+      - PAYMENT_PENDING
+      - PAID
+      - SHIPPED
+      - DELIVERED
+      - CANCELLED
+    OrderRequestDto:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            "$ref": "#/components/schemas/OrderItemRequest"
+    OrderItemRequest:
+      type: object
+      required:
+      - productId
+      - quantity
+      properties:
+        productId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+    OrderUpdateRequest:
+      type: object
+      required:
+      - newStatus
+      properties:
+        newStatus:
+          "$ref": "#/components/schemas/OrderStatus"
+    OrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        orderStatus:
+          "$ref": "#/components/schemas/OrderStatus"
+        totalPrice:
+          type: number
+        items:
+          type: array
+          items:
+            "$ref": "#/components/schemas/OrderItemResponse"
+        createdAt:
+          type: string
+          format: date-time
+    OrderItemResponse:
+      type: object
+      properties:
+        productName:
+          type: string
+        quantity:
+          type: integer
+    ExceptionDto:
+      type: object
+      properties:
+        message:
+          type: string
+        validationErrors:
+          type: object
+          additionalProperties:
+            type: string
+
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ExceptionDto"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ExceptionDto"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ExceptionDto"
+    ServerError:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ExceptionDto"

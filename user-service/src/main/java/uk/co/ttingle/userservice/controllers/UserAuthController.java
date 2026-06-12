@@ -4,29 +4,27 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import uk.co.ttingle.userservice.models.dto.AuthResponse;
-import uk.co.ttingle.userservice.models.dto.LoginRequest;
-import uk.co.ttingle.userservice.models.dto.RegisterRequest;
-import uk.co.ttingle.userservice.models.dto.UserDto;
+import uk.co.ttingle.userservice.generated.rest.v1.AuthenticationApiV1;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.AuthResponse;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.LoginRequest;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.RegisterRequest;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.UserDto;
 import uk.co.ttingle.userservice.services.UserAuthService;
 
-@RestController("/api/v1/auth")
+@RestController
 @RequiredArgsConstructor
-public class UserAuthController {
+public class UserAuthController implements AuthenticationApiV1 {
 
   private final UserAuthService userAuthService;
 
-  @GetMapping("/login")
-  public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+  @Override
+  public ResponseEntity<AuthResponse> login(LoginRequest loginRequest) {
     return ResponseEntity.ok(userAuthService.loginUser(loginRequest));
   }
 
-  @PostMapping("/register")
-  public ResponseEntity<UserDto> register(@RequestBody RegisterRequest registerRequest) {
+  @Override
+  public ResponseEntity<UserDto> register(RegisterRequest registerRequest) {
     return ResponseEntity.status(CREATED).body(userAuthService.registerUser(registerRequest));
   }
 }

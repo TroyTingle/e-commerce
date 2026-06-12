@@ -12,10 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import uk.co.ttingle.userservice.models.dto.AuthResponse;
-import uk.co.ttingle.userservice.models.dto.LoginRequest;
-import uk.co.ttingle.userservice.models.dto.RegisterRequest;
-import uk.co.ttingle.userservice.models.dto.UserDto;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.AuthResponse;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.LoginRequest;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.RegisterRequest;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.UserDto;
 import uk.co.ttingle.userservice.services.UserAuthService;
 
 @ExtendWith(MockitoExtension.class)

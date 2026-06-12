@@ -33,6 +33,7 @@
       <plugin.jacoco.version>0.8.14</plugin.jacoco.version>
       <plugin.maven.compiler.version>3.11.0</plugin.maven.compiler.version>
       <plugin.maven.surefire.version>3.2.2</plugin.maven.surefire.version>
+      <plugin.openapi.generator.version>7.22.0</plugin.openapi.generator.version>
       <plugin.protobuf.maven>4.0.3</plugin.protobuf.maven>
       <plugin.spotless.version>3.2.1</plugin.spotless.version>
 
@@ -151,6 +152,9 @@
           <version>${plugin.spotless.version}</version>
           <configuration>
             <java>
+              <excludes>
+                <exclude>src/main/java/**/generated/**/*.java</exclude>
+              </excludes>
               <toggleOffOn/>
               <cleanthat>
                 <sourceJdk>${java.version}</sourceJdk>
@@ -182,6 +186,7 @@
           </configuration>
           <executions>
             <execution>
+              <phase>test-compile</phase>
               <goals>
                 <goal>prepare-agent</goal>
               </goals>
@@ -241,11 +246,18 @@
           <executions>
             <execution>
               <id>generate</id>
+              <phase>process-sources</phase>
               <goals>
                 <goal>generate</goal>
               </goals>
             </execution>
           </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.openapitools</groupId>
+          <artifactId>openapi-generator-maven-plugin</artifactId>
+          <version>${plugin.openapi.generator.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
