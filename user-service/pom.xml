@@ -179,6 +179,47 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-user-service-v1-api</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${maven.multiModuleProjectDirectory}/specs/api/user-service-api.json</inputSpec>
+              <generatorName>spring</generatorName>
+              <generateModelTests>false</generateModelTests>
+              <generateApiTests>false</generateApiTests>
+              <generateSupportingFiles>false</generateSupportingFiles>
+              <apiNameSuffix>ApiV1</apiNameSuffix>
+              <configOptions>
+                <useSpringBoot4>true</useSpringBoot4>
+                <useJackson3>true</useJackson3>
+                <openApiNullable>false</openApiNullable>
+                <documentationProvider>none</documentationProvider>
+                <useJakartaEe>true</useJakartaEe>
+                <useSwaggerUI>false</useSwaggerUI>
+                <annotationLibrary>none</annotationLibrary>
+                <interfaceOnly>true</interfaceOnly>
+                <useTags>true</useTags>
+                <skipDefaultInterface>true</skipDefaultInterface>
+                <sourceFolder>src/main/java</sourceFolder>
+                <apiPackage>uk.co.ttingle.userservice.generated.rest.v1</apiPackage>
+                <modelPackage>uk.co.ttingle.userservice.generated.rest.v1.dto</modelPackage>
+                <additionalModelTypeAnnotations>
+                  @lombok.Builder(toBuilder = true)
+                </additionalModelTypeAnnotations>
+                <generatedConstructorWithRequiredArgs>true</generatedConstructorWithRequiredArgs>
+                <generatedConstructorWithAllArgs>true</generatedConstructorWithAllArgs>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
