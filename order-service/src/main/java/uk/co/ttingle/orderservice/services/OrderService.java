@@ -5,6 +5,8 @@ import static java.time.Instant.now;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
 import uk.co.ttingle.orderservice.exceptions.OrderNotFoundException;
 import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
 import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
@@ -12,8 +14,6 @@ import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderUpdateRequest;
 import uk.co.ttingle.orderservice.mappers.OrderMapper;
 import uk.co.ttingle.orderservice.models.Order;
 import uk.co.ttingle.orderservice.repositories.OrderRepository;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

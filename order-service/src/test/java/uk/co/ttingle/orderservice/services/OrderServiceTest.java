@@ -1,13 +1,13 @@
 package uk.co.ttingle.orderservice.services;
 
 import static java.util.UUID.randomUUID;
-import static uk.co.ttingle.orderservice.enums.OrderStatus.CREATED;
-import static uk.co.ttingle.orderservice.enums.OrderStatus.PAID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.co.ttingle.orderservice.enums.OrderStatus.CREATED;
+import static uk.co.ttingle.orderservice.enums.OrderStatus.PAID;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -15,13 +15,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import uk.co.ttingle.orderservice.exceptions.OrderNotFoundException;
-import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
-import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
-import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderUpdateRequest;
-import uk.co.ttingle.orderservice.mappers.OrderMapper;
-import uk.co.ttingle.orderservice.models.Order;
-import uk.co.ttingle.orderservice.repositories.OrderRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -31,6 +24,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
+import uk.co.ttingle.orderservice.exceptions.OrderNotFoundException;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderUpdateRequest;
+import uk.co.ttingle.orderservice.mappers.OrderMapper;
+import uk.co.ttingle.orderservice.models.Order;
+import uk.co.ttingle.orderservice.repositories.OrderRepository;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

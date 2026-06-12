@@ -1,8 +1,8 @@
 package uk.co.ttingle.productservice.mappers;
 
 import org.springframework.stereotype.Component;
-import uk.co.ttingle.productservice.models.Category;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.CategoryDto;
+import uk.co.ttingle.productservice.models.Category;
 
 @Component
 public class CategoryMapper {

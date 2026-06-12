@@ -10,11 +10,6 @@ import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 import java.util.UUID;
-
-import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
-import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
-import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderUpdateRequest;
-import uk.co.ttingle.orderservice.services.OrderService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -23,6 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderUpdateRequest;
+import uk.co.ttingle.orderservice.services.OrderService;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

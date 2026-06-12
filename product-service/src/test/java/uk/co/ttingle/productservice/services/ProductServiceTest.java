@@ -31,15 +31,15 @@ import org.springframework.data.jpa.domain.Specification;
 import uk.co.ttingle.productservice.exceptions.CategoryNotFoundException;
 import uk.co.ttingle.productservice.exceptions.DuplicateSkuException;
 import uk.co.ttingle.productservice.exceptions.ProductNotFoundException;
+import uk.co.ttingle.productservice.generated.rest.v1.dto.InventoryUpdateRequest;
+import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
+import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductPage;
+import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductRequest;
 import uk.co.ttingle.productservice.mappers.ProductMapper;
 import uk.co.ttingle.productservice.models.Category;
 import uk.co.ttingle.productservice.models.Product;
 import uk.co.ttingle.productservice.repositories.CategoryRepository;
 import uk.co.ttingle.productservice.repositories.ProductRepository;
-import uk.co.ttingle.productservice.generated.rest.v1.dto.InventoryUpdateRequest;
-import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
-import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductPage;
-import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductRequest;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
@@ -95,7 +95,8 @@ class ProductServiceTest {
     when(productMapper.toProductDto(productOne)).thenReturn(productDtoOne);
     when(productMapper.toProductDto(productTwo)).thenReturn(productDtoTwo);
 
-    ProductPage response = productService.getAllProducts("category", ONE, TEN, "name", true, pageable);
+    ProductPage response =
+        productService.getAllProducts("category", ONE, TEN, "name", true, pageable);
 
     assertThat(response.getContent()).containsExactly(productDtoOne, productDtoTwo);
     verify(productRepository)

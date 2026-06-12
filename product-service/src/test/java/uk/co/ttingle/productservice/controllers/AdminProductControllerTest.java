@@ -17,10 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import uk.co.ttingle.productservice.services.ProductService;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.InventoryUpdateRequest;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductRequest;
+import uk.co.ttingle.productservice.services.ProductService;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

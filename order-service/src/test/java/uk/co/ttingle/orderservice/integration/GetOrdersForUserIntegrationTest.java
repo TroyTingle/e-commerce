@@ -1,17 +1,17 @@
 package uk.co.ttingle.orderservice.integration;
 
 import static java.util.UUID.randomUUID;
-import static uk.co.ttingle.orderservice.enums.OrderStatus.CREATED;
-import static uk.co.ttingle.orderservice.enums.OrderStatus.PAID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static uk.co.ttingle.orderservice.enums.OrderStatus.CREATED;
+import static uk.co.ttingle.orderservice.enums.OrderStatus.PAID;
 
-import uk.co.ttingle.orderservice.models.Order;
-import uk.co.ttingle.orderservice.models.dto.OrderResponse;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import uk.co.ttingle.orderservice.models.Order;
+import uk.co.ttingle.orderservice.models.dto.OrderResponse;
 
 @Tag("integration")
 class GetOrdersForUserIntegrationTest extends BaseIntegrationTest {

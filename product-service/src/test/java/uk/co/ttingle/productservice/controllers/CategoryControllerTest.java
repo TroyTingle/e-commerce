@@ -13,8 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import uk.co.ttingle.productservice.services.CategoryService;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.CategoryDto;
+import uk.co.ttingle.productservice.services.CategoryService;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

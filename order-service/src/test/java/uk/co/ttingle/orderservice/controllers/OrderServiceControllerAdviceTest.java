@@ -5,7 +5,6 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import uk.co.ttingle.orderservice.exceptions.OrderNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import uk.co.ttingle.commonlib.dto.ExceptionDto;
+import uk.co.ttingle.orderservice.exceptions.OrderNotFoundException;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

@@ -1,28 +1,28 @@
 package uk.co.ttingle.orderservice.mappers;
 
 import static java.util.UUID.randomUUID;
-import static uk.co.ttingle.orderservice.enums.OrderStatus.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.co.ttingle.orderservice.enums.OrderStatus.CREATED;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import uk.co.ttingle.orderservice.clients.ProductServiceClient;
-import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderItemRequest;
-import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
-import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
-import uk.co.ttingle.orderservice.models.Order;
-import uk.co.ttingle.orderservice.models.OrderItem;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.co.ttingle.commonlib.dto.ProductDto;
+import uk.co.ttingle.orderservice.clients.ProductServiceClient;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderItemRequest;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
+import uk.co.ttingle.orderservice.models.Order;
+import uk.co.ttingle.orderservice.models.OrderItem;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)

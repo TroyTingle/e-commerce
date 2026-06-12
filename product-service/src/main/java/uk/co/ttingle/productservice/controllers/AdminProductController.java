@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.co.ttingle.productservice.services.ProductService;
 import uk.co.ttingle.productservice.generated.rest.v1.AdminProductsApiV1;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.InventoryUpdateRequest;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductRequest;
+import uk.co.ttingle.productservice.services.ProductService;
 
 // TODO: Add @PreAuthorize("hasRole('ADMIN')")
 @RestController

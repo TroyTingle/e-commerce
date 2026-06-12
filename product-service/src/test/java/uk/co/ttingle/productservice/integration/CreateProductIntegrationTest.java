@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductRequest;
 import uk.co.ttingle.productservice.integration.testdata.CreateProductData;
 import uk.co.ttingle.productservice.models.Category;
-import uk.co.ttingle.commonlib.dto.ProductDto;
 
 @Tag("integration")
 class CreateProductIntegrationTest extends BaseIntegrationTest {

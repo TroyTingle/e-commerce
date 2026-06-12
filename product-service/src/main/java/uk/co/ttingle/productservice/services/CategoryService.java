@@ -4,9 +4,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uk.co.ttingle.productservice.exceptions.CategoryNotFoundException;
+import uk.co.ttingle.productservice.generated.rest.v1.dto.CategoryDto;
 import uk.co.ttingle.productservice.mappers.CategoryMapper;
 import uk.co.ttingle.productservice.repositories.CategoryRepository;
-import uk.co.ttingle.productservice.generated.rest.v1.dto.CategoryDto;
 
 @Service
 @RequiredArgsConstructor

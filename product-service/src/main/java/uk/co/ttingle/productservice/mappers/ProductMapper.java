@@ -3,10 +3,10 @@ package uk.co.ttingle.productservice.mappers;
 import static java.time.Instant.now;
 
 import org.springframework.stereotype.Component;
-import uk.co.ttingle.productservice.models.Category;
-import uk.co.ttingle.productservice.models.Product;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductRequest;
+import uk.co.ttingle.productservice.models.Category;
+import uk.co.ttingle.productservice.models.Product;
 
 @Component
 public class ProductMapper {

@@ -1,7 +1,6 @@
 package uk.co.ttingle.orderservice.integration;
 
 import static java.util.UUID.randomUUID;
-import static uk.co.ttingle.orderservice.enums.OrderStatus.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
@@ -9,19 +8,20 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static uk.co.ttingle.orderservice.enums.OrderStatus.CREATED;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import uk.co.ttingle.orderservice.models.dto.OrderItemRequest;
-import uk.co.ttingle.orderservice.models.dto.OrderRequestDto;
-import uk.co.ttingle.orderservice.models.dto.OrderResponse;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderItemRequest;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderRequestDto;
+import uk.co.ttingle.orderservice.generated.rest.v1.dto.OrderResponse;
 
 @Tag("integration")
 class CreateOrderIntegrationTest extends BaseIntegrationTest {

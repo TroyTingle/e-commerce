@@ -13,10 +13,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import uk.co.ttingle.commonlib.dto.ExceptionDto;
 import uk.co.ttingle.productservice.exceptions.CategoryNotFoundException;
 import uk.co.ttingle.productservice.exceptions.DuplicateSkuException;
 import uk.co.ttingle.productservice.exceptions.ProductNotFoundException;
-import uk.co.ttingle.commonlib.dto.ExceptionDto;
 
 @Slf4j
 @RestControllerAdvice

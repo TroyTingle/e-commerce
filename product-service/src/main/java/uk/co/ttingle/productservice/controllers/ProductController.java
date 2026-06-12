@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.co.ttingle.productservice.services.ProductService;
 import uk.co.ttingle.productservice.generated.rest.v1.ProductsApiV1;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductDto;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.ProductPage;
+import uk.co.ttingle.productservice.services.ProductService;
 
 @RestController
 @RequestMapping("/api/v1/products")

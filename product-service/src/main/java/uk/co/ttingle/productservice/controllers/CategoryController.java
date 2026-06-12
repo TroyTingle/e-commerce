@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.co.ttingle.productservice.services.CategoryService;
 import uk.co.ttingle.productservice.generated.rest.v1.CategoriesApiV1;
 import uk.co.ttingle.productservice.generated.rest.v1.dto.CategoryDto;
+import uk.co.ttingle.productservice.services.CategoryService;
 
 @RestController
 @RequestMapping("/api/v1/categories")

@@ -12,10 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import uk.co.ttingle.commonlib.dto.ExceptionDto;
 import uk.co.ttingle.productservice.exceptions.CategoryNotFoundException;
 import uk.co.ttingle.productservice.exceptions.DuplicateSkuException;
 import uk.co.ttingle.productservice.exceptions.ProductNotFoundException;
-import uk.co.ttingle.commonlib.dto.ExceptionDto;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
