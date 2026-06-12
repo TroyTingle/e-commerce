@@ -1,0 +1,23 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="User Service Local" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="user-service" />
+    <option name="MAIN_CLASS_NAME" value="uk.co.ttingle.userservice.UserServiceApplication" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="uk.co.ttingle.userservice.UserServiceApplication" />
+    <option name="PROGRAM_PARAMETERS" value="--server.port=8081" />
+    <envs>
+      <env name="DATABASE_URL" value="jdbc:postgresql://localhost:5432/userdb" />
+      <env name="DATABASE_USERNAME" value="user" />
+      <env name="DATABASE_PASSWORD" value="password" />
+      <env name="JWT_SECRET" value="your_very_secret_jwt_secret_key_32" />
+    </envs>
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="uk.co.ttingle.userservice.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
