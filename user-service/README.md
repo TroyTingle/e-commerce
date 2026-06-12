@@ -73,7 +73,7 @@ Main configuration is in `src/main/resources/application.yml`.
 | `spring.datasource.username` | none | Required via `DATABASE_USERNAME`. |
 | `spring.datasource.password` | none | Required via `DATABASE_PASSWORD`. |
 | `spring.jpa.hibernate.ddl-auto` | `update` | Suitable for learning/local use; migrations should replace this later. |
-| `security.jwt.secret` | `your_very_secret_jwt_secret_key` | Override with `JWT_SECRET`. |
+| `security.jwt.secret` | `your_very_secret_jwt_secret_key_32` | Override with `JWT_SECRET`. |
 | `security.jwt.expiration` | `3600000` | One hour in milliseconds. |
 
 Actuator exposes `health`, `info`, `metrics`, and `prometheus`.

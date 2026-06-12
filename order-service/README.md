@@ -134,7 +134,7 @@ Main configuration is in `src/main/resources/application.yml`.
 | `spring.datasource.username` | `user` | Override with `DATABASE_USERNAME`. |
 | `spring.datasource.password` | `password` | Override with `DATABASE_PASSWORD`. |
 | `spring.jpa.hibernate.ddl-auto` | `update` | Replace with migrations later. |
-| `security.jwt.secret` | `your_very_secret_jwt_secret_key` | Override with `JWT_SECRET`. |
+| `security.jwt.secret` | `your_very_secret_jwt_secret_key_32` | Override with `JWT_SECRET`. |
 | `security.jwt.expiration` | `3600000` | One hour. |
 | `product-service.grpc.address` | `product-service:9090` | Override with `PRODUCT_SERVICE_GRPC_ADDRESS`. |
 

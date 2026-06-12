@@ -39,5 +39,5 @@ logging:
 
 security:
   jwt:
-    secret: ${JWT_SECRET:your_very_secret_jwt_secret_key}
+    secret: ${JWT_SECRET:your_very_secret_jwt_secret_key_32}
     expiration: 3600000 # 1 hour in milliseconds

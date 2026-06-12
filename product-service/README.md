@@ -127,7 +127,7 @@ Main configuration is in `src/main/resources/application.yml`.
 | `spring.datasource.password` | `password` | Override with `DATABASE_PASSWORD`. |
 | `spring.jpa.hibernate.ddl-auto` | `update` | Replace with migrations later. |
 | `spring.grpc.server.port` | `9090` | Internal gRPC API. |
-| `security.jwt.secret` | `your_very_secret_jwt_secret_key` | Override with `JWT_SECRET`. |
+| `security.jwt.secret` | `your_very_secret_jwt_secret_key_32` | Override with `JWT_SECRET`. |
 | `security.jwt.expiration` | `3600000` | One hour. |
 
 The test profile uses `ddl-auto=create-drop` and disables the gRPC server.
