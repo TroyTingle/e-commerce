@@ -190,7 +190,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>${maven.multiModuleProjectDirectory}/specs/api/user-service-api.json</inputSpec>
+              <inputSpec>${maven.multiModuleProjectDirectory}/specs/api/user-service-api.yaml</inputSpec>
               <generatorName>spring</generatorName>
               <generateModelTests>false</generateModelTests>
               <generateApiTests>false</generateApiTests>
