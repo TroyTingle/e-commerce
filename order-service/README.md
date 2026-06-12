@@ -17,7 +17,7 @@ Order creation should fail if product-service lookup fails. Inventory reservatio
 
 ## Key Classes
 - `OrderServiceApplication`: Spring Boot entry point.
-- `OrderController`: REST order endpoints.
+- `OrderController`: REST order endpoints using generated OpenAPI DTOs.
 - `OrderService`: order business logic.
 - `OrderMapper`: request/entity/response mapping and product lookup during order creation.
 - `ProductServiceClient`: gRPC client wrapper.
@@ -28,7 +28,9 @@ Order creation should fail if product-service lookup fails. Inventory reservatio
 - `OrderServiceControllerAdvice`: exception-to-HTTP mapping.
 
 ## REST API
-Base path: `/api/v1/orders`.
+Contract source: [`specs/api/order-service-api.yaml`](./specs/api/order-service-api.yaml).
+
+Base path: `/api/v1/orders`. The Maven build generates `OrdersApiV1` and DTOs under `uk.co.ttingle.orderservice.generated.rest.v1`, with `OrderStatus` mapped to the domain enum.
 
 All endpoints require a bearer token except actuator `health` and `info`.
 
@@ -176,11 +178,9 @@ The test config uses `ddl-auto=create-drop`, a test JWT secret, and `product-ser
 - Product-service is a runtime dependency for order creation.
 - Order creation currently snapshots product data but does not reserve or decrement stock.
 - `GET /api/v1/orders` is not paginated yet.
-- `PATCH /api/v1/orders/{orderId}` declares `ResponseEntity<OrderResponse>` but returns `204 No Content`; the intended API is no-content.
 - Docker Compose does not currently pass `JWT_SECRET` to this service, so local Compose runs use the development default from `application.yml`.
 
 ## TODO / Future Work
-- Keep `PATCH` as `204 No Content`, but change the Java return type to `ResponseEntity<Void>`.
 - Add status transition validation.
 - Add gRPC failure mapping to clean HTTP errors.
 - Add Kafka event publishing for inventory reservation.

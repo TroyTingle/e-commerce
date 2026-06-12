@@ -4,7 +4,7 @@ Shared library for cross-service DTOs, API error models, and JWT security helper
 ## Purpose
 `common-lib` is broader than a tiny utility package. It currently centralizes shared DTOs and authentication primitives, and it is expected to support future shared contracts/helpers while the codebase matures.
 
-Longer term, shared transport DTOs such as `ProductDto` should move toward explicit API-contract modules or generated contracts so service boundaries stay clear.
+REST request/response DTOs have started moving into generated service-local contracts under `specs/api/*.yaml`. `common-lib` still contains `ProductDto`, which is currently used by the order-service gRPC client path.
 
 ## Responsibilities
 - Provide common DTOs:
@@ -56,6 +56,6 @@ The gateway is planned to validate JWTs and forward user context. Reusing `JwtTo
 - Add unit tests for `JwtTokenUtil` token generation, parsing, expiration, and invalid-token handling.
 - Add unit tests for `JwtAuthenticationFilter`.
 - Split security helpers from shared DTOs before the gateway starts depending on the module heavily.
-- Move `ProductDto` to an explicit API contract or generated contract module.
+- Move or replace `ProductDto` with generated/internal service contracts once the gRPC/client contract is cleaned up.
 - Validate JWT secret length at application startup.
 - Define a consistent cross-service error response shape around `ExceptionDto`.

@@ -51,6 +51,7 @@ flowchart LR
 - Spring MVC: REST APIs.
 - Spring Data JPA and PostgreSQL: relational persistence for implemented services.
 - Spring Security and JJWT: bearer-token authentication.
+- OpenAPI Generator: generates Spring interfaces and DTOs from `specs/api/*.yaml` for implemented REST services.
 - Spring gRPC/protobuf: internal product lookup from `order-service` to `product-service`.
 - Testcontainers: PostgreSQL-backed integration tests in implemented services.
 - OpenTelemetry, Prometheus, Grafana: local observability scaffold.
@@ -118,32 +119,39 @@ mvn -pl product-service -am test
 - Prefer Docker Compose for local service orchestration.
 - Use `mvn test` before pushing code.
 - Use `mvn verify` when you want Spotless and JaCoCo checks to run through the Maven lifecycle.
-- Keep cross-service API shape explicit; shared DTOs in `common-lib` are expected to migrate toward dedicated API contracts.
+- Keep cross-service API shape explicit; REST contracts now live in `specs/api/*.yaml` and are generated into each implemented service during Maven builds.
 - Treat TODOs in these READMEs as portfolio backlog items, not production-ready guarantees.
 
 ## API Docs
-No Springdoc/OpenAPI or Swagger configuration is present yet. A future gateway could aggregate OpenAPI specs and expose them under a public docs route. <!-- TODO: verify future docs route -->
+OpenAPI source specs are checked in under `specs/api`:
+- `specs/api/user-service-api.yaml`
+- `specs/api/product-service-api.yaml`
+- `specs/api/order-service-api.yaml`
+
+The implemented service POMs run `openapi-generator-maven-plugin` to generate Spring interfaces and DTOs under each module's `target/generated-sources/openapi` tree. Swagger UI/Springdoc is not configured at runtime yet; a future gateway could aggregate or expose these specs. <!-- TODO: verify future docs route -->
 
 ### user-service REST
-Intended base path: `/api/v1/auth`. The current code needs a mapping fix because `@RestController("/api/v1/auth")` does not define a request path.
+Contract source: `specs/api/user-service-api.yaml`. `UserAuthController` implements generated `AuthenticationApiV1`.
 
-| Method | Intended Path | Current Path | Description | Request Body | Response Body | Error Codes |
-|--------|---------------|--------------|-------------|--------------|---------------|-------------|
-| `POST` | `/api/v1/auth/login` | `GET /login` | Authenticates email/password and returns a bearer token. | `{"email":"user@example.com","password":"password"}` | `{"token":"<jwt>","type":"Bearer"}` | `401`, `500` |
-| `POST` | `/api/v1/auth/register` | `POST /register` | Registers a customer user. Seller signup is future work. | `{"email":"user@example.com","password":"password123","firstName":"Ada","lastName":"Lovelace"}` | `{"email":"user@example.com","firstName":"Ada","lastName":"Lovelace"}` | `409`, `500` |
-
-### product-service REST
 | Method | Path | Description | Request Body | Response Body | Error Codes |
 |--------|------|-------------|--------------|---------------|-------------|
-| `GET` | `/api/v1/products` | Searches products by optional `category`, `minPrice`, `maxPrice`, `search`, `active`, and pageable query params. | None | Spring `Page<ProductDto>` | `400`, `500` |
-| `GET` | `/api/v1/products/{id}` | Gets a product by UUID. | None | `ProductDto` | `404`, `500` |
+| `GET` | `/api/v1/auth/login` | Authenticates email/password and returns a bearer token. Intended design is `POST`; the current OpenAPI spec still says `GET`. | `LoginRequest` | `AuthResponse` | `401`, `500` |
+| `POST` | `/api/v1/auth/register` | Registers a customer user. Seller signup is future work. | `RegisterRequest` | `UserDto` | `409`, `500` |
+
+### product-service REST
+Contract source: `specs/api/product-service-api.yaml`. Product/category/admin controllers implement generated OpenAPI interfaces and use generated DTOs.
+
+| Method | Path | Description | Request Body | Response Body | Error Codes |
+|--------|------|-------------|--------------|---------------|-------------|
+| `GET` | `/api/v1/products` | Searches products by optional `category`, `minPrice`, `maxPrice`, `search`, `active`, and pageable query params. | None | `ProductPage` | `400`, `500` |
+| `GET` | `/api/v1/products/{productId}` | Gets a product by UUID. | None | `ProductDto` | `404`, `500` |
 | `GET` | `/api/v1/products/sku/{sku}` | Gets a product by SKU. | None | `ProductDto` | `404`, `500` |
 | `GET` | `/api/v1/categories` | Lists categories. | None | `CategoryDto[]` | `500` |
-| `GET` | `/api/v1/categories/{name}` | Intended category lookup by name; implementation currently reads `name` as a query parameter. | None | `CategoryDto` | `404`, `500` |
+| `GET` | `/api/v1/categories/name` | Gets a category by query parameter `category`; the controller currently annotates the argument as `@PathVariable`, so the spec/controller need aligning. | None | `CategoryDto` | `404`, `500` |
 | `POST` | `/api/v1/admin/products` | Creates a product; should require admin authority. | `ProductRequest` | `ProductDto` | `400`, `404`, `409`, `500` |
-| `PUT` | `/api/v1/admin/products/{id}` | Updates a product; should require admin authority. | `ProductRequest` | `ProductDto` | `400`, `404`, `500` |
-| `DELETE` | `/api/v1/admin/products/{id}` | Soft-deactivates a product; should require admin authority. | None | Empty `204` | `404`, `500` |
-| `PATCH` | `/api/v1/admin/products/{id}/inventory` | Temporary inventory overwrite endpoint until `inventory-service` exists. | `{"quantity":10}` | Empty `204` | `400`, `404`, `500` |
+| `PUT` | `/api/v1/admin/products/{productId}` | Updates a product; should require admin authority. | `ProductRequest` | `ProductDto` | `400`, `404`, `409`, `500` |
+| `DELETE` | `/api/v1/admin/products/{productId}` | Soft-deactivates a product; should require admin authority. | None | Empty `204` | `404`, `500` |
+| `PATCH` | `/api/v1/admin/products/id/inventory` | Temporary inventory overwrite endpoint until `inventory-service` exists. This spec path likely should be `/api/v1/admin/products/{productId}/inventory`. | `InventoryUpdateRequest` | Empty `204` | `400`, `404`, `500` |
 
 `ProductRequest` fields: `name`, `description`, `price`, `currency`, `sku`, `inventoryQuantity`, `categoryName`.
 
@@ -157,6 +165,8 @@ Defined in `specs/proto/product.proto`. This is intended to be internal-only.
 | `ecommerce.product.v1.ProductService/GetProductByUuid` | Resolves a product UUID for order pricing. | `ProductRequest { product_id: string }` | `ProductResponse { id, name, description, price, sku, category, currency }`, where `price` is minor units | `INVALID_ARGUMENT`, `NOT_FOUND`, `INTERNAL` |
 
 ### order-service REST
+Contract source: `specs/api/order-service-api.yaml`. The service uses generated request/response DTOs; the controller currently keeps explicit Spring MVC mappings rather than implementing generated `OrdersApiV1`.
+
 All order endpoints require a bearer token except actuator `health` and `info`.
 
 | Method | Path | Description | Request Body | Response Body | Error Codes |
@@ -177,11 +187,13 @@ Suggested transition model for future implementation:
 Order response feedback: include `productId`, `sku`, `productName`, `quantity`, `unitPriceAtPurchase`, and `lineTotal` per item. The current response only returns product name and quantity, which is good for a minimal demo but thin for receipts, support, and auditability.
 
 ## TODO / Future Work
-- Fix current auth route/method mismatch in `user-service`.
+- Change user login in the OpenAPI spec and implementation from `GET` to `POST`.
+- Align product OpenAPI paths and controller annotations for category lookup and inventory update.
+- Remove duplicate class-level `@RequestMapping` prefixes from product controllers or adjust generated interface paths so Spring does not risk double-prefix mappings.
 - Add CI/CD pipelines, test reporting, and coverage publishing.
 - Add database migrations with Flyway or Liquibase.
 - Replace development secrets with a real secrets-management approach.
-- Add OpenAPI/Swagger documentation and gRPC contract docs.
+- Add runtime Swagger/Springdoc exposure or gateway aggregation for the checked-in OpenAPI specs.
 - Add e2e tests with Playwright or an API test suite covering register, login, product creation/search, and order creation.
 - Keep Docker Compose aligned as new services and event flows come online.
 - Add observability dashboards and alerting; Prometheus/Grafana are scaffolded but no dashboards are checked in.

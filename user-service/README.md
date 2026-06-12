@@ -4,7 +4,7 @@ Spring Boot service for customer registration, login, password hashing, role sto
 ## Purpose
 `user-service` owns identity data for ShopSphere. It is currently focused on authentication, with user profile endpoints, seller signup, password reset, email verification, and refresh tokens planned for later.
 
-This is a portfolio/learning service, so some intended API behavior is ahead of the current implementation.
+This is a portfolio/learning service. REST interfaces and DTOs are generated from `specs/api/user-service-api.yaml`.
 
 ## Responsibilities
 - Register new customer users.
@@ -16,7 +16,7 @@ This is a portfolio/learning service, so some intended API behavior is ahead of 
 
 ## Key Classes
 - `UserServiceApplication`: Spring Boot entry point.
-- `UserAuthController`: login/register REST controller.
+- `UserAuthController`: login/register REST controller implementing generated `AuthenticationApiV1`.
 - `UserAuthService`: registration and login business logic.
 - `UserService`: loads users for Spring Security authentication.
 - `SecurityConfig`: stateless security configuration, password encoder, and authentication manager.
@@ -25,14 +25,14 @@ This is a portfolio/learning service, so some intended API behavior is ahead of 
 - `Role`: currently `CUSTOMER` and `ADMIN`.
 
 ## API
-Intended base path: `/api/v1/auth`.
+Contract source: `specs/api/user-service-api.yaml`.
 
-Current implementation note: `@RestController("/api/v1/auth")` sets a bean name, not a request mapping. The controller currently exposes `/login` and `/register` unless fixed with `@RequestMapping("/api/v1/auth")`.
+The Maven build generates `uk.co.ttingle.userservice.generated.rest.v1.AuthenticationApiV1` and DTOs under `uk.co.ttingle.userservice.generated.rest.v1.dto`.
 
-| Method | Intended Path | Current Path | Description |
-|--------|---------------|--------------|-------------|
-| `POST` | `/api/v1/auth/login` | `GET /login` | Authenticate and return a bearer token. |
-| `POST` | `/api/v1/auth/register` | `POST /register` | Register a new customer user. |
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/auth/login` | Authenticate and return a bearer token. Intended design is `POST`, but the current OpenAPI spec still defines `GET`. |
+| `POST` | `/api/v1/auth/register` | Register a new customer user. |
 
 `RegisterRequest`:
 ```json
@@ -108,15 +108,13 @@ Actuator exposes `health`, `info`, `metrics`, and `prometheus`.
 - Testcontainers dependencies are present but no integration tests are currently tagged.
 
 ## Operational Notes
-- Login/register should be publicly accessible, but current security allowlist uses `/api/auth/**`, which does not match the intended `/api/v1/auth/**`.
+- Login/register should be publicly accessible, but current security allowlist uses `/api/auth/**`, which does not match `/api/v1/auth/**`.
 - Admin user creation is a future ticket.
 - User profile endpoints are planned but not implemented.
 
 ## TODO / Future Work
-- Add `@RequestMapping("/api/v1/auth")` to `UserAuthController`.
-- Change login from `GET /login` to `POST /api/v1/auth/login`.
+- Change login from `GET /api/v1/auth/login` to `POST /api/v1/auth/login` in the OpenAPI spec and controller contract.
 - Align security allowlist with `/api/v1/auth/**`.
-- Add `@Valid` to request bodies.
 - Add seller signup flow.
 - Add admin user provisioning strategy.
 - Add user profile endpoints.
