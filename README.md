@@ -6,7 +6,7 @@ The project is intentionally a learning/portfolio codebase. Some modules are imp
 ## Architecture
 ```mermaid
 flowchart LR
-  Client["API client"] --> Gateway["gateway (planned Spring Cloud Gateway)"]
+  Client["API client"] --> Gateway["gateway (Spring Cloud Gateway)"]
   Gateway --> User["user-service REST"]
   Gateway --> Product["product-service REST"]
   Gateway --> Order["order-service REST"]
@@ -23,11 +23,11 @@ flowchart LR
   User --> Common["common-lib"]
   Product --> Common
   Order --> Common
-  Gateway -. "planned JWT validation/helpers" .-> Common
+  Gateway --> Common["common-lib"]
 ```
 
 ### Responsibilities
-- `gateway`: planned Spring Cloud Gateway edge service. It should validate JWTs, forward user context to downstream services, handle CORS/rate limiting/logging, and expose a single public `/api/v1/**` namespace.
+- `gateway`: Spring Cloud Gateway edge service. It validates JWTs, forwards user context to downstream services, handles CORS/rate limiting/logging, and exposes a single public `/api/v1/**` namespace.
 - `user-service`: owns user registration, login, password hashing, roles, and JWT issuance. Future scope includes user profile endpoints, seller signup, password reset, email verification, and refresh tokens.
 - `product-service`: owns product/category catalog data today. It exposes customer catalog reads, admin product management, and an internal-only gRPC lookup used by orders.
 - `order-service`: owns customer order creation and order history. It fails order creation if product lookup fails, and will later publish events for async inventory workflows.
@@ -38,7 +38,7 @@ flowchart LR
 ### Data Flow
 1. A customer registers or logs in through `user-service` at the intended `/api/v1/auth/**` API.
 2. `user-service` signs a JWT whose subject is the user UUID and whose claims include `email` and `roles`.
-3. The planned gateway validates JWTs and forwards identity context. Downstream services also currently use `JwtAuthenticationFilter`.
+3. The gateway validates JWTs and forwards identity context. Downstream services also currently use `JwtAuthenticationFilter`.
 4. A customer creates an order through `order-service`.
 5. `order-service` calls the internal `product-service` gRPC API for each product ID. If product lookup fails, order creation should fail.
 6. `order-service` snapshots product name and price at purchase time and persists the order.
@@ -66,7 +66,7 @@ flowchart LR
 | `inventory-service` | Planned inventory source of truth for reservations and stock adjustments. | [README](inventory-service/README.md) |
 | `order-service` | Customer order API that snapshots product data via gRPC. | [README](order-service/README.md) |
 | `payment-service` | Planned transactional payment service with demo fake provider and future Stripe-style integration. | [README](payment-service/README.md) |
-| `gateway` | Planned Spring Cloud Gateway edge service. | [README](gateway/README.md) |
+| `gateway` | Spring Cloud Gateway edge service. | [README](gateway/README.md) |
 
 ## How to Run the Full Stack
 Docker Compose is the intended local development path.
@@ -87,6 +87,7 @@ docker compose -f infra/local/docker-compose.yml up --build
 ```
 
 Published ports from `infra/local/docker-compose.yml`:
+- Gateway: `8080`
 - User Service: `8081`
 - Product Service: `8082,9090`
 - Order Service: `8083`
@@ -97,7 +98,6 @@ Published ports from `infra/local/docker-compose.yml`:
 
 ### Work In Progress Notes
 - Kafka is running locally for future event-driven work but no service currently produces or consumes Kafka messages.
-- Docker Compose starts `order-service`, but it does not currently pass `JWT_SECRET`; the service falls back to its development default.
 
 ### Tests
 Default test run excludes integration tests through the parent `testTags` property:
@@ -129,6 +129,18 @@ OpenAPI source specs are checked in under `specs/api`:
 - `specs/api/order-service-api.yaml`
 
 The implemented service POMs run `openapi-generator-maven-plugin` to generate Spring interfaces and DTOs under each module's `target/generated-sources/openapi` tree. Swagger UI/Springdoc is not configured at runtime yet; a future gateway could aggregate or expose these specs. <!-- TODO: verify future docs route -->
+
+### gateway REST
+The gateway exposes the public edge URL on port `8080` in Docker Compose and routes these paths to the downstream services:
+
+| Public Path | Downstream Service | Auth |
+|-------------|--------------------|------|
+| `/api/v1/auth/**` | `user-service` | Public |
+| `/api/v1/users/**` | `user-service` | Bearer token |
+| `GET /api/v1/products/**` | `product-service` | Public |
+| `GET /api/v1/categories/**` | `product-service` | Public |
+| `/api/v1/admin/products/**` | `product-service` | Bearer token with `ADMIN` role |
+| `/api/v1/orders/**` | `order-service` | Bearer token |
 
 ### user-service REST
 Contract source: `specs/api/user-service-api.yaml`. `UserAuthController` implements generated `AuthenticationApiV1`.

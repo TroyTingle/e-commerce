@@ -1,70 +1,71 @@
 # gateway
-Planned Spring Cloud Gateway edge service for public API routing, JWT validation, user-context forwarding, CORS, rate limiting, logging, and API documentation aggregation.
+Spring Cloud Gateway edge service for public API routing, JWT validation, user-context forwarding, CORS, rate limiting, and logging.
 
 ## Purpose
-`gateway` is declared as a Maven module but currently has no checked-in application source, resources, or runtime entry point.
+`gateway` exposes one public API namespace and keeps edge concerns out of individual services.
 
-The intended role is to expose one public API namespace and keep edge concerns out of individual services.
-
-## Intended Responsibilities
+## Responsibilities
 - Route public `/api/v1/**` traffic to downstream services.
 - Validate JWT bearer tokens at the edge.
 - Forward user identity and roles to downstream services.
 - Apply CORS policy.
-- Apply rate limiting.
+- Apply simple in-memory rate limiting.
 - Add request/response logging and tracing context.
-- Aggregate or link service OpenAPI docs.
 - Provide health/readiness behavior for the edge layer.
 
 ## Current State
-- `pom.xml` exists.
-- `src/main/java`, `src/main/resources`, and test folders exist but contain no source files.
-- No Spring Cloud Gateway dependency exists yet.
-- No route configuration exists.
-- No JWT validation behavior exists yet.
+- Spring Boot application entry point exists.
+- Spring Cloud Gateway routes are configured in Java.
+- JWT validation and `X-User-*` header forwarding are implemented as a reactive gateway filter.
+- Basic request logging, CORS, actuator health/info/metrics/prometheus, and rate limiting are configured.
 
-## Proposed Routing
+## Routing
 | Public Path | Downstream Service | Notes |
 |-------------|--------------------|-------|
 | `/api/v1/auth/**` | `user-service` | Login/register should be public. |
-| `/api/v1/users/**` | `user-service` | Future user profile endpoints. |
-| `/api/v1/products/**` | `product-service` | Customer catalog reads. |
-| `/api/v1/categories/**` | `product-service` | Category reads and future admin category management. |
-| `/api/v1/admin/products/**` | `product-service` | Admin-only product management. |
-| `/api/v1/orders/**` | `order-service` | Customer order APIs. |
-
-Route table is intended design, not current code.
+| `/api/v1/users/**` | `user-service` | Requires a valid bearer token. |
+| `GET /api/v1/products/**` | `product-service` | Public customer catalog reads. |
+| `GET /api/v1/categories/**` | `product-service` | Public category reads. |
+| `/api/v1/admin/products/**` | `product-service` | Requires a valid bearer token with `ADMIN` in the `roles` claim. |
+| `/api/v1/orders/**` | `order-service` | Requires a valid bearer token. |
 
 ## JWT Strategy
-The gateway should validate JWTs and forward identity context. For this portfolio project, reusing `common-lib` JWT helpers is acceptable.
+The gateway validates JWTs with `common-lib` JWT helpers and forwards identity context.
 
-Suggested forwarded headers:
+Forwarded headers:
 - `X-User-Id`
 - `X-User-Email`
 - `X-User-Roles`
 
 Downstream services currently validate JWTs themselves. A future decision is whether to keep defense-in-depth validation in each service or trust the gateway in local/internal networks. <!-- TODO: verify final trust model -->
 
+## Configuration
+| Property | Default | Environment Variable |
+|----------|---------|----------------------|
+| `gateway.services.user-service-url` | `http://localhost:8081` | `USER_SERVICE_URL` |
+| `gateway.services.product-service-url` | `http://localhost:8082` | `PRODUCT_SERVICE_URL` |
+| `gateway.services.order-service-url` | `http://localhost:8083` | `ORDER_SERVICE_URL` |
+| `gateway.rate-limit.requests` | `120` | `GATEWAY_RATE_LIMIT_REQUESTS` |
+| `gateway.rate-limit.window` | `1m` | `GATEWAY_RATE_LIMIT_WINDOW` |
+| `security.jwt.secret` | `your_very_secret_jwt_secret_key_32` | `JWT_SECRET` |
+
 ## How to Run & Test
 - Prerequisites: Java 25 and Maven.
 - Build:
   ```sh
-  mvn -pl gateway clean package
+  mvn -pl gateway -am clean package
   ```
-- Run locally: no application class exists yet.
+- Run locally:
+  ```sh
+  mvn -pl gateway -am spring-boot:run
+  ```
 - Unit tests:
   ```sh
-  mvn -pl gateway test
+  mvn -pl gateway -am test
   ```
 - Integration tests: none are present.
-- Maven profiles: none are declared.
-- Spring profiles/properties: none are present.
 
 ## TODO / Future Work
-- Add Spring Cloud Gateway dependencies.
-- Add application entry point and route configuration.
-- Validate JWTs and forward user context.
-- Add CORS, rate limiting, request logging, and tracing propagation.
-- Add route-level authorization rules.
-- Add OpenAPI aggregation or documentation links.
 - Add gateway integration tests with stub downstream services.
+- Replace in-memory rate limiting with a distributed limiter if multiple gateway instances are run.
+- Decide whether downstream services keep validating JWTs or trust gateway-forwarded identity on internal networks.

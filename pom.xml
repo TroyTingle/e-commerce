@@ -246,7 +246,7 @@
           <executions>
             <execution>
               <id>generate</id>
-              <phase>process-sources</phase>
+              <phase>generate-sources</phase>
               <goals>
                 <goal>generate</goal>
               </goals>
