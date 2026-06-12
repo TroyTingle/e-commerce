@@ -13,11 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.co.ttingle.commonlib.security.JwtTokenUtil;
 import uk.co.ttingle.userservice.exceptions.EmailConflictException;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.AuthResponse;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.LoginRequest;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.RegisterRequest;
+import uk.co.ttingle.userservice.generated.rest.v1.dto.UserDto;
 import uk.co.ttingle.userservice.models.User;
-import uk.co.ttingle.userservice.models.dto.AuthResponse;
-import uk.co.ttingle.userservice.models.dto.LoginRequest;
-import uk.co.ttingle.userservice.models.dto.RegisterRequest;
-import uk.co.ttingle.userservice.models.dto.UserDto;
 import uk.co.ttingle.userservice.repositories.UserRepository;
 
 @Service
