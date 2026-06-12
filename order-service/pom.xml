@@ -138,6 +138,12 @@
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>uk.co.ttingle</groupId>
+      <artifactId>product-service</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
     <!-- End region Test containers -->
   </dependencies>
 
