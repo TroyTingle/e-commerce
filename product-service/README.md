@@ -176,7 +176,7 @@ The test profile uses `ddl-auto=create-drop` and disables the gRPC server.
 
 ## TODO / Future Work
 - Add admin authorization to `/api/v1/admin/products/**`.
-- Add service security configuration or intentionally document why the service relies on gateway-only auth.
+- Add service security configuration.
 - Align generated OpenAPI paths and controller annotations for category lookup and inventory update.
 - Remove duplicate request mapping prefixes or regenerate interfaces with relative method paths.
 - Add category create/update/delete endpoints.
