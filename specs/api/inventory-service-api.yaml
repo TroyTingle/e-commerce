@@ -1,0 +1,250 @@
+openapi: 3.1.0
+info:
+  title: Inventory Service API
+  version: 1.0.0
+paths:
+  /api/v1/inventory/{productId}:
+    get:
+      tags:
+      - Inventory
+      operationId: getInventoryItem
+      summary: Get full inventory state for a product
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Inventory item
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/InventoryItemResponse"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/NotFound"
+        '500':
+          "$ref": "#/components/responses/ServerError"
+  /api/v1/inventory/availability/{productId}:
+    get:
+      tags:
+      - Inventory
+      operationId: getInventoryAvailability
+      summary: Get safe available-to-sell inventory state for a product
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Inventory availability
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/InventoryAvailabilityResponse"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '404':
+          "$ref": "#/components/responses/NotFound"
+        '500':
+          "$ref": "#/components/responses/ServerError"
+  /api/v1/admin/inventory/{productId}/adjustments:
+    post:
+      tags:
+      - AdminInventory
+      operationId: createStockAdjustment
+      summary: Apply a stock adjustment for a product
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/StockAdjustmentRequest"
+      responses:
+        '201':
+          description: Stock adjustment applied
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/InventoryItemResponse"
+        '400':
+          "$ref": "#/components/responses/ValidationError"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '500':
+          "$ref": "#/components/responses/ServerError"
+    get:
+      tags:
+      - AdminInventory
+      operationId: getStockAdjustments
+      summary: List stock adjustments for a product
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Stock adjustments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/StockAdjustmentResponse"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+        '500':
+          "$ref": "#/components/responses/ServerError"
+
+components:
+  schemas:
+    InventoryItemResponse:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+        sku:
+          type: string
+        quantityOnHand:
+          type: integer
+          format: int32
+        reservedQuantity:
+          type: integer
+          format: int32
+        availableQuantity:
+          type: integer
+          format: int32
+        updatedAt:
+          type: string
+          format: date-time
+    InventoryAvailabilityResponse:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+        sku:
+          type: string
+        availableQuantity:
+          type: integer
+          format: int32
+        updatedAt:
+          type: string
+          format: date-time
+    StockAdjustmentRequest:
+      type: object
+      required:
+      - quantityDelta
+      - reason
+      properties:
+        sku:
+          type: string
+          description: Optional SKU snapshot for a newly-created inventory item.
+        quantityDelta:
+          type: integer
+          format: int32
+          minimum: -2147483648
+          maximum: 2147483647
+        reason:
+          "$ref": "#/components/schemas/StockAdjustmentReason"
+        reference:
+          type: string
+          maxLength: 255
+    StockAdjustmentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        sku:
+          type: string
+        quantityDelta:
+          type: integer
+          format: int32
+        reason:
+          "$ref": "#/components/schemas/StockAdjustmentReason"
+        reference:
+          type: string
+        createdBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    StockAdjustmentReason:
+      type: string
+      enum:
+      - RECEIVED
+      - CORRECTION
+      - DAMAGE
+      - RETURN
+      - MANUAL_REMOVAL
+    ExceptionDto:
+      type: object
+      properties:
+        message:
+          type: string
+        validationErrors:
+          type: object
+          additionalProperties:
+            type: string
+
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ExceptionDto"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ExceptionDto"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ExceptionDto"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ExceptionDto"
+    ServerError:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ExceptionDto"
