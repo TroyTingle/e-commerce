@@ -30,6 +30,21 @@ services:
     cap_drop:
       - ALL
 
+  inventory-service:
+    build: ../../inventory-service
+    ports:
+      - "8084:8080"
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/inventorydb
+      - DATABASE_USERNAME=user
+      - DATABASE_PASSWORD=password
+      - JWT_SECRET=your_very_secret_jwt_secret_key_32
+    depends_on:
+      postgres:
+        condition: service_started
+    cap_drop:
+      - ALL
+
   order-service:
     build: ../../order-service
     ports:
@@ -106,6 +121,8 @@ services:
       user-service:
         condition: service_started
       product-service:
+        condition: service_started
+      inventory-service:
         condition: service_started
       order-service:
         condition: service_started

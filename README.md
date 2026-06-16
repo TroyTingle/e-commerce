@@ -8,19 +8,22 @@ The project is intentionally a learning/portfolio codebase. Some modules are imp
 flowchart LR
   Client["API client"] --> User["user-service REST"]
   Client["API client"] --> Product["product-service REST"]
+  Client["API client"] --> Inventory["inventory-service REST"]
   Client["API client"] --> Order["order-service REST"]
 
   User --> UserDb[("PostgreSQL userdb")]
   Product --> ProductDb[("PostgreSQL productdb")]
+  Inventory --> InventoryDb[("PostgreSQL inventorydb")]
   Order --> OrderDb[("PostgreSQL orderdb")]
 
   Order -->|"gRPC ProductService.GetProductByUuid"| Product
-  Order -. "planned Kafka events" .-> Inventory["inventory-service (planned)"]
+  Order -. "planned Kafka events" .-> Inventory
   Order -. "planned transactional payment flow" .-> Payment["payment-service (planned)"]
   Payment -. "payment result events" .-> Order
 
   User --> Common["common-lib"]
   Product --> Common
+  Inventory --> Common
   Order --> Common
 ```
 
@@ -28,7 +31,7 @@ flowchart LR
 - `user-service`: owns user registration, login, password hashing, roles, and JWT issuance. Future scope includes user profile endpoints, seller signup, password reset, email verification, and refresh tokens.
 - `product-service`: owns product/category catalog data today. It exposes customer catalog reads, admin product management, and an internal-only gRPC lookup used by orders.
 - `order-service`: owns customer order creation and order history. It fails order creation if product lookup fails, and will later publish events for async inventory workflows.
-- `inventory-service`: planned source of truth for stock levels, reservations, and stock adjustments.
+- `inventory-service`: source of truth for stock-on-hand, reserved quantity, available-to-sell calculations, and stock adjustment audit records. Future scope includes Kafka-backed reservations.
 - `payment-service`: planned transactional payment service using a fake provider for demo mode, with a Stripe-style integration as a likely future extension.
 - `common-lib`: shared library for cross-service DTOs and security helpers. DTOs are expected to move toward explicit API contracts over time.
 
@@ -59,7 +62,7 @@ flowchart LR
 | `common-lib` | Shared DTOs and JWT/security utilities. | [README](common-lib/README.md) |
 | `user-service` | User registration, login, password hashing, roles, and JWT issuance. | [README](user-service/README.md) |
 | `product-service` | Product/category catalog REST API and internal product gRPC lookup. | [README](product-service/README.md) |
-| `inventory-service` | Planned inventory source of truth for reservations and stock adjustments. | [README](inventory-service/README.md) |
+| `inventory-service` | Stock-on-hand, available quantity, and stock adjustment audit API. | [README](inventory-service/README.md) |
 | `order-service` | Customer order API that snapshots product data via gRPC. | [README](order-service/README.md) |
 | `payment-service` | Planned transactional payment service with demo fake provider and future Stripe-style integration. | [README](payment-service/README.md) |
 
@@ -85,6 +88,7 @@ Published ports from `infra/local/docker-compose.yml`:
 - User Service: `8081`
 - Product Service: `8082,9090`
 - Order Service: `8083`
+- Inventory Service: `8084`
 - PostgreSQL: `5432`
 - Kafka UI: `9001`
 - Prometheus: `9099`
@@ -120,6 +124,7 @@ mvn -pl product-service -am test
 OpenAPI source specs are checked in under `specs/api`:
 - `specs/api/user-service-api.yaml`
 - `specs/api/product-service-api.yaml`
+- `specs/api/inventory-service-api.yaml`
 - `specs/api/order-service-api.yaml`
 
 The implemented service POMs run `openapi-generator-maven-plugin` to generate Spring interfaces and DTOs under each module's `target/generated-sources/openapi` tree.
@@ -179,6 +184,20 @@ Suggested transition model for future implementation:
 - Let payment events drive `PAYMENT_PENDING -> PAID`; let inventory/fulfillment events drive shipping states
 
 Order response feedback: include `productId`, `sku`, `productName`, `quantity`, `unitPriceAtPurchase`, and `lineTotal` per item. The current response only returns product name and quantity, which is good for a minimal demo but thin for receipts, support, and auditability.
+
+### inventory-service REST
+Contract source: `specs/api/inventory-service-api.yaml`. Inventory controllers implement generated OpenAPI interfaces and use generated DTOs.
+
+All inventory endpoints require a bearer token with `ADMIN` authority in the first implementation slice, except actuator `health` and `info`.
+
+| Method | Path | Description | Request Body | Response Body | Error Codes |
+|--------|------|-------------|--------------|---------------|-------------|
+| `GET` | `/api/v1/inventory/{productId}` | Gets full inventory state for a product. | None | `InventoryItemResponse` | `401`, `403`, `404`, `500` |
+| `GET` | `/api/v1/inventory/availability/{productId}` | Gets available-to-sell state for a product. | None | `InventoryAvailabilityResponse` | `401`, `403`, `404`, `500` |
+| `POST` | `/api/v1/admin/inventory/{productId}/adjustments` | Applies an admin stock adjustment. | `StockAdjustmentRequest` | `InventoryItemResponse` | `400`, `401`, `403`, `500` |
+| `GET` | `/api/v1/admin/inventory/{productId}/adjustments` | Lists stock adjustment audit records. | None | `StockAdjustmentResponse[]` | `401`, `403`, `500` |
+
+`StockAdjustmentRequest` fields: `sku`, `quantityDelta`, `reason`, and `reference`. `reason` values are `RECEIVED`, `CORRECTION`, `DAMAGE`, `RETURN`, and `MANUAL_REMOVAL`.
 
 ## TODO / Future Work
 - Change user login in the OpenAPI spec and implementation from `GET` to `POST`.
